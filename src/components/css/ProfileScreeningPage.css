@@ -1,0 +1,98 @@
+/* Modal Styles */
+.modal {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+    padding: 20px;
+    width: 80%;
+    max-width: 600px;
+    opacity: 0;
+    pointer-events: none; /* Prevent interactions when hidden */
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    z-index: 1000; /* Ensure it's on top */
+  }
+  
+  /* Modal is shown when hovered */
+  .modal.show {
+    opacity: 1;
+    pointer-events: auto;
+    transform: translate(-50%, -50%) scale(1);
+  }
+  
+  /* Modal fade-in effect */
+  .modal.show-enter {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+  
+  .modal.show-exit {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.9);
+  }
+  
+  /* Modal background */
+  .modal-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 999;
+    display: none;
+  }
+  
+  /* Active backdrop when modal is shown */
+  .modal.show-backdrop {
+    display: block;
+  }
+  
+  /* When the modal is hovered */
+  .modal:hover {
+    transform: translate(-50%, -50%) scale(1.05);
+    transition: transform 0.2s ease-out;
+  }
+  
+  /* Modal Dialog */
+  .modal-dialog {
+    margin: 0;
+  }
+  
+  /* Modal Header */
+  .modal-header {
+    border-bottom: 2px solid #ddd;
+  }
+  
+  /* Modal Body */
+  .modal-body {
+    max-height: 400px;
+    overflow-y: auto;
+    margin-top: 10px;
+  }
+  
+  /* Modal Footer */
+  .modal-footer {
+    margin-top: 20px;
+    text-align: right;
+  }
+  
+  /* Button Styles */
+  .btn-outline-info {
+    background-color: #1c3657;
+    color: #fff;
+    border-radius: 4px;
+    border: 2px solid #1c3657;
+    padding: 10px 15px;
+    font-size: 14px;
+    transition: background-color 0.3s ease;
+  }
+  
+  .btn-outline-info:hover {
+    background-color: #0d1a2c;
+    border-color: #0d1a2c;
+  }
+  
