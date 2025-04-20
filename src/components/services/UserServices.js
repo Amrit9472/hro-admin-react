@@ -51,5 +51,16 @@ class UsersService{
         }
     }
 
+    // Inside UsersService class
+        static async register(userData) {
+            try {
+            const response = await UsersService.userServiceApiClient.post(`/auth/register`, userData);
+            return response.data;
+            } catch (err) {
+            console.error("Error during registration:", err);
+            throw err;
+            }
+        }
+  
 }
 export default UsersService;

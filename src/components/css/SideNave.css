@@ -1,49 +1,62 @@
 
+.app-loyout {
+  display: flex; /* Use flexbox for layout */
+  /* height: 110vh; */
+}
+
 .side-nav {
-  display: flex;
-  height: 100%;
+  width: 250px; /* Fixed width for the side navigation */
+  background-color: #1e1e2f; /* Light background color for side nav */
+  padding: 20px; /* Padding for side nav */
+  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1); /* Optional shadow for depth */
+  box-sizing: border-box;
+  color: white;
 }
 
-.side-nav-items {
-  width: 200px;
-  background-color: #f4f4f4;
-  padding: 10px;
-  border-right: 1px solid #ddd;
-}
-
-.side-nav-item {
-  margin: 10px 0;
-  cursor: pointer;
-}
-
-.side-nav-item:hover {
-  background-color: #e0e0e0;
-  padding-left: 10px;
-}
-
-.side-nav-content {
-  flex-grow: 1;
-  padding: 20px;
-  background-color: #fff;
+.main-content {
+  flex: 1; /* Take up remaining space */
+  padding: 20px; /* Padding for main content */
+  background-color: white; /* White background for main content */
+  /* overflow-y: auto; */
 }
 
 .side-nav-header {
-  background-color: #f1f1f1;
-  padding: 15px;
-  text-align: center;
-  border-bottom: 1px solid #ddd;
+  margin-bottom:5px; /* Space below the header */
+  border-bottom: 1px solid #444;
+  padding-bottom: 10px;
+  background-color: aliceblue;
+  border-bottom: 1px solid #ccc;
+
 }
+/* .side-nav-header {
+  padding: 10px; 
+  background-color: #f4f4f4;
+  border-bottom: 1px solid #ccc;
+} */
 
 .user-info {
+  display: flex;
+  flex-direction: column; /* Stack labels vertically */
+}
+
+.user-name,
+.user-email {
+  margin: 5px 0; /* Add some space between labels */
+  font-size: 14px; /* Set font size */
+  color: #333; /* Text color */
+}
+
+
+
+.side-nav-item {
+  padding: 10px; /* Padding for each item */
+  cursor: pointer; /* Pointer cursor on hover */
+  transition: background-color 0.3s; /* Smooth background transition */
+  border-radius: 6px;
+  background-color: #2a2a3d;
   margin-bottom: 10px;
 }
 
-.user-name {
-  font-size: 18px;
-  font-weight: bold;
-}
-
-.user-email {
-  font-size: 14px;
-  color: #555;
+.side-nav-item:hover {
+  background-color: #e0e0e0; /* Change background on hover */
 }

@@ -19,8 +19,8 @@ apiClient.interceptors.request.use(config => {
     return Promise.reject(error);
 });
 
-export const getProfileScreaningList = () => {
-    return apiClient.get(`${REST_API_BASE_URL}/listOfEmpPorfileScreaning`)
+export const getProfileScreaningList = (location) => {
+    return apiClient.get(`${REST_API_BASE_URL}/listOfEmpPorfileScreaning/${location}`)
 }
 
 
@@ -32,8 +32,8 @@ export const putResponseOnProfileScreening = (employeeId, StatusRequestDTO) => {
     return apiClient.put(`${REST_API_BASE_URL}/hrResponseSubmitionOnProfilePage/${employeeId}`, StatusRequestDTO);
 }
 
-export const getListOfEmployeeScheduleInterview = () => {
-    return apiClient.get(`${REST_API_BASE_URL}/listOfEmpOnSchedulePage`);
+export const getListOfEmployeeScheduleInterview = (location) => {
+    return apiClient.get(`${REST_API_BASE_URL}/listOfEmpOnSchedulePage/${location}`);
   };
   
 
@@ -63,3 +63,7 @@ export const getListOfEmployeeScheduleInterview = () => {
     return apiClient.put(`${REST_API_BASE_URL}/submitResponseForReScreening/${employeeId}`, data);
   };
   
+  export const getListOfSelectedEmployee = (location) => {
+    return apiClient.get(`${REST_API_BASE_URL}/selectEmployee/${location}`);
+
+  }

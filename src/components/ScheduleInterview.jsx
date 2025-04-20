@@ -3,6 +3,7 @@ import { getListOfEmployeeScheduleInterview,submitScheduleInterview } from '../c
 import  UsersService  from '../components/services/UserServices'; // make sure this path is correct
 import DataTable from 'react-data-table-component';
 import jobTitles from '../components/constants/jobProfiles'; // ✅ Job profiles import
+import { useAuth } from '../components/AuthProvider';
 
 function ScheduleInterview() {
   const [employees, setEmployees] = useState([]);
@@ -10,6 +11,7 @@ function ScheduleInterview() {
   const [remarks, setRemarks] = useState({});
   const [processNames , setProcessName ] = useState([]);
   const [selectionError, setSelectionError] = useState(false);
+  const { user } = useAuth();
 
   useEffect(() => {
     UsersService.initialize();
@@ -27,7 +29,7 @@ function ScheduleInterview() {
   };
 
   const getAllEmployees = () => {
-    getListOfEmployeeScheduleInterview()
+    getListOfEmployeeScheduleInterview(user.city)
       .then((response) => {
         let filteredEmployees = response.data;
         if (filterDate) {

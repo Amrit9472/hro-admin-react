@@ -36,9 +36,9 @@ const Login = () => {
           aria-invalid="false"
           onChange={handleInput}
         />
-        <div id="user-email" className="sr-only">
+        {/* <div id="user-email" className="sr-only">
           Please enter a valid username. It must contain at least 6 characters.
-        </div>
+        </div> */}
       </div>
       <div className="form_control">
         <label htmlFor="password">Password:</label>
@@ -50,9 +50,9 @@ const Login = () => {
           aria-invalid="false"
           onChange={handleInput}
         />
-        <div id="user-password" className="sr-only">
+        {/* <div id="user-password" className="sr-only">
           your password should be more than 6 character
-        </div>
+        </div> */}
       </div>
       <button className="btn-submit">Submit</button>
     </form>

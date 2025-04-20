@@ -3,6 +3,7 @@ import { getProfileScreaningList, getEmployeesInformation , putResponseOnProfile
 import DataTable from 'react-data-table-component';
 import { format } from 'date-fns';
 import { useNavigate, Link } from 'react-router-dom';
+import { useAuth } from '../components/AuthProvider';
 import '../components/css/ProfileScreeningPage.css'
 function ProfileScreeningPage({ role, name }) {
   const [employees, setEmployees] = useState([]);
@@ -15,6 +16,7 @@ function ProfileScreeningPage({ role, name }) {
   const [currentDateTime, setCurrentDateTime] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
   const [messageTimeoutId, setMessageTimeoutId] = useState(null);
+  const { user } = useAuth();
 
   useEffect(() => {
     getAllEmployees();
@@ -29,7 +31,7 @@ function ProfileScreeningPage({ role, name }) {
 
 
   function getAllEmployees() {
-    getProfileScreaningList()
+    getProfileScreaningList(user.city)
 
       .then((response) => {
         let filteredEmployees = response.data;
