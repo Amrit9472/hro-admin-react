@@ -52,3 +52,14 @@ export const getListOfEmployeeScheduleInterview = () => {
   export const getAllEmployeeRejectedByManager = (location) => {
     return apiClient.get(`${REST_API_BASE_URL}/rejectByManager/${location}`);
   }
+
+  export const submitResponseOnRejectPage = (employeeId , payload) => {
+    return apiClient.post(`${REST_API_BASE_URL}/submitResponseOnRejectPage/${employeeId}`,payload);
+  }
+  export const getListOfEmployeeRejectedInProfileScreening = (location) => {
+    return apiClient.get(`${REST_API_BASE_URL}/rejectedbyProfileScreaning/${location}`);
+  }  
+  export const submitResponseForReScreening = (employeeId, data) => {
+    return apiClient.put(`${REST_API_BASE_URL}/submitResponseForReScreening/${employeeId}`, data);
+  };
+  
