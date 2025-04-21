@@ -1,4 +1,5 @@
-import { useContext, createContext,useState } from "react";
+
+import { useContext, createContext,useState ,useEffect} from "react";
 import { useNavigate } from "react-router-dom";
 import UsersService from "./services/UserServices";
 
@@ -6,10 +7,14 @@ import UsersService from "./services/UserServices";
 const AuthContext = createContext();
 
 const AuthProvider = ({ children }) => {
-    const [user, setUser] = useState(null);
+    // const [user, setUser] = useState(null);
     const[token , setToken] = useState(localStorage.getItem("site")|| "")
     const navigate = useNavigate();
-
+    const [user, setUser] = useState(() => {
+      const storedUser = localStorage.getItem("user");
+      return storedUser ? JSON.parse(storedUser) : null;
+    });
+  
     const loginAction = async (data) => {
         try {
           const res = await UsersService.login(data.email, data.password);
@@ -26,13 +31,14 @@ const AuthProvider = ({ children }) => {
               uniqueCode: res.uniqueCode,
             };
             setUser(userData);
-
+            localStorage.setItem("user", JSON.stringify(userData));
             navigate("/dashboard");
             return;
           }
           throw new Error(res.message || "Login failed");
         } catch (err) {
           console.error("Login failed in AuthProvider:", err);
+          throw err;
         }
       };
     
@@ -40,7 +46,8 @@ const AuthProvider = ({ children }) => {
         setUser(null);
         setToken("");
         localStorage.removeItem("site");
-        navigate("/login");
+        localStorage.removeItem("user");
+        navigate("/");
       };
 
   return <AuthContext.Provider value={{token ,user,loginAction,logOut}}>

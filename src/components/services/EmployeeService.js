@@ -19,8 +19,10 @@ apiClient.interceptors.request.use(config => {
     return Promise.reject(error);
 });
 
-export const getProfileScreaningList = () => {
-    return apiClient.get(`${REST_API_BASE_URL}/listOfEmpPorfileScreaning`)
+
+
+export const getProfileScreaningList = (location) => {
+    return apiClient.get(`${REST_API_BASE_URL}/listOfEmpPorfileScreaning/${location}`)
 }
 
 
@@ -31,3 +33,40 @@ export const getEmployeesInformation = (employeeId) => {
 export const putResponseOnProfileScreening = (employeeId, StatusRequestDTO) => {
     return apiClient.put(`${REST_API_BASE_URL}/hrResponseSubmitionOnProfilePage/${employeeId}`, StatusRequestDTO);
 }
+
+export const getListOfEmployeeScheduleInterview = (location) => {
+    return apiClient.get(`${REST_API_BASE_URL}/listOfEmpOnSchedulePage/${location}`);
+  };
+  
+
+  export const submitScheduleInterview = (employeeId, payload) => {
+    return apiClient.post(`${REST_API_BASE_URL}/submitResponseOnScheduleInterviewPage/${employeeId}`, payload);
+  };
+  
+  export const getEmployeesListOnManagerPageWithRoleAndLocation = (role, location) => {
+    return apiClient.get(`${REST_API_BASE_URL}/getAllEmployeeOnManagersPage/${role}/${location}`);
+  }
+  
+  export const submitManagerPageResponse = (employeeId, data) => {
+    return apiClient.put(`${REST_API_BASE_URL}/managerPageResponseSubmit/${employeeId}`, data);
+  };
+  
+  export const getAllEmployeeRejectedByManager = (location) => {
+    return apiClient.get(`${REST_API_BASE_URL}/rejectByManager/${location}`);
+  }
+
+  export const submitResponseOnRejectPage = (employeeId , payload) => {
+    return apiClient.post(`${REST_API_BASE_URL}/submitResponseOnRejectPage/${employeeId}`,payload);
+  }
+  export const getListOfEmployeeRejectedInProfileScreening = (location) => {
+    return apiClient.get(`${REST_API_BASE_URL}/rejectedbyProfileScreaning/${location}`);
+  }  
+  export const submitResponseForReScreening = (employeeId, data) => {
+    return apiClient.put(`${REST_API_BASE_URL}/submitResponseForReScreening/${employeeId}`, data);
+  };
+  
+  export const getListOfSelectedEmployee = (location) => {
+    return apiClient.get(`${REST_API_BASE_URL}/selectEmployee/${location}`);
+
+  }
+
