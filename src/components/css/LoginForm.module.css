@@ -7,6 +7,7 @@
     background-image: url('path/to/your/background-image.jpg'); 
     background-size: cover; /* Cover the entire container */
     background-position: center; /* Center the background image */
+   
 }
 
 .form_control {
@@ -14,9 +15,12 @@
 }
 
 input {
-    padding: 8px;
-    border-radius: 5px;
+    
+    padding: 15px;
+    border-radius: 10px;
     border: 1px solid #ccc;
+    width: 250px;
+    margin: 0 auto
 }
 
 button {
@@ -40,4 +44,5 @@ form {
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
     max-width: 400px; /* Maximum width of the form */
     width: 100%; /* Full width up to max-width */
+
 }

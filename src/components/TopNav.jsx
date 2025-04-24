@@ -9,7 +9,7 @@ const auth = useAuth()
 const roleItems = {
     ADMIN: ['Interview', 'User Management', 'Settings', 'Reports'], // Admin can access all
     HR: ['Dashboard', 'Employee Management', 'Payroll'],           // HR specific items
-    MANAGER: ['Dashboard', 'Interview Schedule', 'Reports'],          // Manager specific items
+    MANAGER: ['Interview Schedule', 'Reports'],          // Manager specific items
     USER: ['Profile'],                                             // Regular User sees only Profile
     TRAINER: ['Dashboard', 'Training Programs'],                  // Trainer specific items
     PAYROLL: ['Dashboard', 'Payroll Reports'],                    // Payroll specific items

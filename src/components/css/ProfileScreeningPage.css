@@ -1,90 +1,169 @@
-.container {
-  max-width: 1200px; /* Set a maximum width for the container */
-  margin: 0 auto; /* Center the container */
-  padding: 20px; /* Add some padding */
+.row.mb-3 {
+  align-items: center; /* vertically align items */
+}
+
+.row.mb-3 .form-control,
+.row.mb-3 .btn {
+  height: 38px; /* matches default Bootstrap input height */
+  min-width: 160px; /* optional: consistent width */
+  box-sizing: border-box;
+}
+
+.row.mb-3 .col-auto {
+  display: flex;
+  align-items: center;
 }
 
 .row {
-  display: flex; /* Use flexbox for the row */
-  flex-wrap: wrap; /* Allow wrapping of items */
-  margin-bottom: 20px; /* Space below the row */
+  display: flex; 
+  flex-wrap: wrap; 
+  margin-bottom:8px; 
 }
 
 .col-auto {
-  margin-right: 10px; /* Space between columns */
+  margin-right: 5px; 
 }
 
 .col-auto:last-child {
-  margin-right: 0; /* Remove margin from the last column */
+  margin-right: 0;
 }
 
 .table-responsive {
-  overflow-x: auto; /* Allow horizontal scrolling for the table */
+  overflow-x: auto; 
 }
 
 .data-table {
-  width: 100%; /* Make the table take full width */
-  border-collapse: collapse; /* Collapse borders */
+  width: 70%; 
+  border-collapse: collapse;
 }
 
 .data-table th, .data-table td {
-  padding: 10px; /* Add padding to table cells */
-  text-align: left; /* Align text to the left */
-  border: 1px solid #ddd; /* Add border to cells */
+  padding: 10px; 
+  text-align: left; 
+  border: 1px solid #ddd; 
 }
 
 .data-table th {
-  background-color: #1C3657; /* Header background color */
-  color: white; /* Header text color */
-  font-size: 14px; /* Header font size */
+  background-color: #1C3657; 
+  color: white; 
+  font-size: 14px; 
 }
 
 .data-table tr:nth-child(even) {
-  background-color: #f2f2f2; /* Zebra striping for rows */
+  background-color: #f2f2f2; 
 }
 
 .data-table tr:hover {
-  background-color: #e0e0e0; /* Highlight row on hover */
+  background-color: #e0e0e0; 
 }
 
+
+
+.custom-toast-container{
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  /* z-index:  */
+}
+/* Modal Styles */
 .modal {
-  display: none; /* Hide modal by default */
-  position: fixed; /* Fixed position */
-  z-index: 1000; /* On top of other content */
-  left: 0;
-  top: 0;
-  width: 100%; /* Full width */
-  height: 100%; /* Full height */
-  overflow: auto; /* Enable scroll if needed */
-  background-color: rgba(0, 0, 0, 0.5); /* Black background with transparency */
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+  padding: 20px;
+  width: 80%;
+  max-width: 400px;
+  opacity: 0;
+  pointer-events: none; /* Prevent interactions when hidden */
+  transition: opacity 0.3s ease, transform 0.3s ease;
+  z-index: 1000; /* Ensure it's on top */
 }
 
+/* Modal is shown when hovered */
 .modal.show {
-  display: block; /* Show modal when active */
+  opacity: 1;
+  pointer-events: auto;
+  transform: translate(-50%, -50%) scale(1);
 }
 
+/* Modal fade-in effect */
+.modal.show-enter {
+  opacity: 1;
+  transform: translate(-50%, -50%) scale(1);
+}
+
+.modal.show-exit {
+  opacity: 0;
+  transform: translate(-50%, -50%) scale(0.9);
+}
+
+/* Modal background */
+.modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 999;
+  display: none;
+}
+
+/* Active backdrop when modal is shown */
+.modal.show-backdrop {
+  display: block;
+}
+
+/* When the modal is hovered */
+.modal:hover {
+  transform: translate(-50%, -50%) scale(1.05);
+  transition: transform 0.2s ease-out;
+}
+
+/* Modal Dialog */
 .modal-dialog {
-  margin: 15% auto; /* Center modal vertically and horizontally */
-  max-width: 600px; /* Set a max width for the modal */
+  margin: 0;
 }
 
-.modal-content {
-  background-color: white; /* Modal background color */
-  border-radius: 5px; /* Rounded corners */
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* Shadow for depth */
+/* Modal Header */
+.modal-header {
+  border-bottom: 2px solid #ddd;
 }
 
-.alert {
-  margin-bottom: 20px; /* Space below alerts */
+/* Modal Body */
+.modal-body {
+  max-height: 400px;
+  overflow-y: auto;
+  margin-top: 10px;
 }
 
-.form-control, .form-select {
-  width: 100%; /* Full width for inputs */
+/* Modal Footer */
+.modal-footer {
+  margin-top: 20px;
+  text-align: right;
 }
 
-.btn {
-  margin-top: 10px; /* Space above buttons */
+/* Button Styles */
+.btn-outline-info {
+  background-color: #1c3657;
+  color: #fff;
+  border-radius: 4px;
+  border: 2px solid #1c3657;
+  padding: 10px 15px;
+  font-size: 14px;
+  transition: background-color 0.3s ease;
 }
+
+.btn-outline-info:hover {
+  background-color: #0d1a2c;
+  border-color: #0d1a2c;
+}
+
 
 /* Responsive Styles */
 @media (max-width: 768px) {

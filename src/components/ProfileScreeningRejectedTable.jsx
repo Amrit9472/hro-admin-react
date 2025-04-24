@@ -69,7 +69,6 @@ const ProfileScreeningRejectedTable = () => {
 
   return (
     <div className="p-4">
-      <h2 className="text-xl font-bold mb-4">Rejected by Profile Screening</h2>
       <DataTable
         columns={columns}
         data={rejectedList}
@@ -77,6 +76,8 @@ const ProfileScreeningRejectedTable = () => {
         pagination
         highlightOnHover
         responsive
+        persistTableHead
+        noDataComponent={<div style={{ padding: '1rem' }}>No employee data available.</div>}
       />
     </div>
   );

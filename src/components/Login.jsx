@@ -39,7 +39,7 @@ const Login = () => {
           {error && <div>{error}</div>}
         </div>
         <div className={styles.form_control}>
-          <label htmlFor="user-email">Email:</label>
+          {/* <label htmlFor="user-email">Email:</label> */}
           <input
             type="text"
             id="user-email"
@@ -50,7 +50,7 @@ const Login = () => {
           />
         </div>
         <div className={styles.form_control}>
-          <label htmlFor="password">Password:</label>
+          {/* <label htmlFor="password">Password:</label> */}
           <input
             type="password"
             id="password"

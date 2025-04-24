@@ -3,6 +3,8 @@ import DataTable from 'react-data-table-component';
 import { useAuth } from '../components/AuthProvider';
 import { getAllEmployeeRejectedByManager ,submitResponseOnRejectPage} from '../components/services/EmployeeService';
 import UsersService from '../components/services/UserServices'; // 👈 make sure this is the correct path
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const RejectedEmployeesTable = () => {
   const { user } = useAuth();
@@ -120,6 +122,8 @@ const RejectedEmployeesTable = () => {
         pagination
         highlightOnHover
         responsive
+        persistTableHead
+        noDataComponent={<div style={{ padding: '1rem' }}>No employee data available.</div>}
       />
     </div>
   );

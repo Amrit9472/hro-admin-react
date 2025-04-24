@@ -1,48 +1,42 @@
 import React, { useState, useEffect, useContext } from 'react'
-import { getProfileScreaningList, getEmployeesInformation , putResponseOnProfileScreening} from '../components/services/EmployeeService';
+import { getProfileScreaningList, getEmployeesInformation, putResponseOnProfileScreening } from '../components/services/EmployeeService';
 import DataTable from 'react-data-table-component';
 import { format } from 'date-fns';
-import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../components/AuthProvider';
 import '../components/css/ProfileScreeningPage.css'
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 function ProfileScreeningPage({ role, name }) {
   const [employees, setEmployees] = useState([]);
   const [selectedResponse, setSelectedResponse] = useState({});
+  const [profileScreenRemarks, setProfileScreenRemarks] = useState({});
   const [showDetailsModal, setShowDetailsModal] = useState(false);
   const [selectedEmployeeDetails, setSelectedEmployeeDetails] = useState([]);
   const [filterDate, setFilterDate] = useState(null);
-  const [responseError, setResponseError] = useState('');
-  const [profileScreenRemarks, setProfileScreenRemarks] = useState({});
-  const [currentDateTime, setCurrentDateTime] = useState('');
-  const [successMessage, setSuccessMessage] = useState('');
-  const [messageTimeoutId, setMessageTimeoutId] = useState(null);
   const { user } = useAuth();
 
   useEffect(() => {
     getAllEmployees();
   }, [filterDate]);
 
-  useEffect(() => {
-    updateDateTime();
-    const intervalId = setInterval(updateDateTime, 1000);
-    return () => clearInterval(intervalId);
-
-  }, [filterDate, employees]);
 
 
-  function getAllEmployees() {
-    getProfileScreaningList(user.city)
-
-      .then((response) => {
-        let filteredEmployees = response.data;
-        if (filterDate) {
-          filteredEmployees = filteredEmployees.filter(emp => new Date(emp.creationDate).toISOString().slice(0, 10) === filterDate.toISOString().slice(0, 10));
-        }
-        setEmployees(filteredEmployees);
-      })
-      .catch(error => {
-        console.error('Error fetching employees:', error.message);
-      });
+  const getAllEmployees = async () => {
+    try {
+      const response = await getProfileScreaningList(user.city);
+      let filteredEmployees = response.data;
+      if (filterDate) {
+        filteredEmployees = filteredEmployees.filter(emp =>
+          new Date(emp.creationDate).toISOString().slice(0, 10) === filterDate.toISOString().slice(0, 10)
+        );
+      }
+      setEmployees(filteredEmployees);
+      setEmployees(response.data);
+    } catch (error) {
+      console.error('Error fetching employees:', error.message);
+      toast.error('Failed to fetch employees. Please try again!');
+    }
   };
 
   const handleFilterChange = (e) => {
@@ -74,102 +68,87 @@ function ProfileScreeningPage({ role, name }) {
 
 
 
-  const handleHrResponseValue = (employeeId) => {
+  const handleHrResponseValue = async (employeeId) => {
     const selectedValue = selectedResponse[employeeId];
     const profileScreenRemark = profileScreenRemarks[employeeId];
-  
-    if (messageTimeoutId) {
-      clearTimeout(messageTimeoutId);
-    }
-  
+
+
     const statusRequestDTO = {
       newStatus: selectedValue,
-      responseSubmitbyName: name, // Assuming `name` is the logged-in HR name
+      responseSubmitbyName: name,
       remarks: profileScreenRemark
     };
-  
-    putResponseOnProfileScreening(employeeId, statusRequestDTO)
-      .then(response => {
-        setEmployees(prevEmployees =>
-          prevEmployees.map(emp =>
-            emp.id === employeeId ? response.data : emp
-          )
-        );
-        setSuccessMessage('Response submitted successfully!');
-        setResponseError('');
-        const timeoutId = setTimeout(() => {
-          setSuccessMessage('');
-        }, 2000);
-        setMessageTimeoutId(timeoutId);
-      })
-      .catch(error => {
-        console.error('Error submitting HR response:', error);
-        console.log('Error response:', error.response);
-        if (error.response && error.response.data) {
-          setResponseError(error.response.data);
-        } else {
-          setResponseError('Failed to submit response. Please try again.');
-        }
-        setSuccessMessage('');
-        const timeoutId = setTimeout(() => {
-          setResponseError('');
-        }, 2000);
-        setMessageTimeoutId(timeoutId);
-      });
-  };
-  
-  const showEmployeeDetails = (employeeId) => {
-    getEmployeesInformation(employeeId)
-      .then((response) => {
-        if (response.data.length > 0) {
-          const employeeDetails = response.data[0];
-          console.log('Employee Details:', employeeDetails);
-          setSelectedEmployeeDetails(employeeDetails);
-          setShowDetailsModal(true); // Show modal when details are fetched
-        } else {
-          console.error('Employee not found');
-          setSelectedEmployeeDetails(null);
-          setShowDetailsModal(false);
-        }
-      })
-      .catch(error => {
-        console.error('Error fetching employee details:', error);
-        setSelectedEmployeeDetails(null);
-        setShowDetailsModal(false);
-      });
+
+    try {
+      const response = await putResponseOnProfileScreening(employeeId, statusRequestDTO);
+      setEmployees(prevEmployees =>
+        prevEmployees.map(emp =>
+          emp.id === employeeId ? response.data : emp
+        )
+      );
+      toast.success('Response submitted successfully');
+    } catch (error) {
+      console.error('Error submitting HR response:', error);
+      toast.error(error.response?.data || 'Failed to submit response. Please try again');
+    }
   };
 
+
+  const showEmployeeDetails = async (employeeId) => {
+    try {
+      const response = await getEmployeesInformation(employeeId);
+      if (response.data.length > 0) {
+        const employeeDetails = response.data[0];
+        setSelectedEmployeeDetails(employeeDetails);
+        setShowDetailsModal(true);
+      } else {
+        setSelectedEmployeeDetails(null);
+        setShowDetailsModal(false);
+      }
+    } catch (error) {
+      console.error('Error fetching employee details:', error);
+      setSelectedEmployeeDetails(null);
+      setShowDetailsModal(false);
+      toast.error('Failed to fetch employee details');
+    }
+  };
   const closeModal = () => {
     setShowDetailsModal(false);
   };
 
-  const updateDateTime = () => {
-    const now = new Date();
-    const options = {
-      weekday: 'long',
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit',
-      second: '2-digit',
-      hour12: false,
-    };
-    const formattedDateTime = new Intl.DateTimeFormat('en-US', options).format(now);
-    setCurrentDateTime(formattedDateTime);
-  };
+
   const columns = [
     {
       name: 'Name',
       selector: row => row.fullName,
-      cell: row => <button className="btn btn-link" onClick={() => showEmployeeDetails(row.id)}>{row.fullName}</button>,
+      cell: row => (
+        <span
+          onClick={() => showEmployeeDetails(row.id)}
+          style={{ color: '#0d6efd', textDecoration: 'underline', cursor: 'pointer' }}
+        >
+          {row.fullName}
+        </span>
+      ),
       sortable: true,
-
     },
+
     {
       name: 'Email',
-      selector: row => row.email,
       sortable: true,
+      selector: row => row.email,
+      cell: row => (
+        <div
+          title={row.email}
+          style={{
+            whiteSpace: 'nowrap',
+            overflow: 'hidden',
+            textOverflow: 'ellipsis',
+            maxWidth: '200px'
+          }}>
+          {row.email}
+        </div>
+      )
+
 
     },
     {
@@ -180,6 +159,19 @@ function ProfileScreeningPage({ role, name }) {
     {
       name: 'Permanent Address',
       selector: row => row.permanentAddress,
+      cell: row => (
+        <div
+          title={row.permanentAddress}
+          style={{
+            whiteSpace: 'nowrap',
+            overflow: 'hidden',
+            textOverflow: 'ellipsis',
+            maxWidth: '200px'
+          }}
+        >
+          {row.permanentAddress}
+        </div>
+      )
 
     },
     {
@@ -228,10 +220,20 @@ function ProfileScreeningPage({ role, name }) {
     <>
 
       <div className='container'>
-        <h2 className='text-center'></h2>
-        {responseError && <div className="alert alert-danger">{responseError}</div>}
-        {successMessage && <div className="alert alert-success">{successMessage}</div>} {/* Success message */}
-        <br />
+        <ToastContainer
+          className="custom-toast-container"
+          position="top-right"
+          autoClose={2000}
+          hideProgressBar={false}
+          newestOnTop={false}
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+          theme="light"
+        />
+
 
         <div className="row mb-3">
           <div className="col-auto">
@@ -244,39 +246,23 @@ function ProfileScreeningPage({ role, name }) {
             <button className="btn btn-outline-info" onClick={clearFilter}>Clear Filter</button>
           </div>
         </div>
+        <div className="table-responsive">
+          <DataTable
+            columns={columns}
+            data={employees}
+            pagination
+            paginationPerPage={7}
+            paginationRowsPerPageOptions={[10, 20, 50, 100]}
+            paginationComponentOptions={{ noRowsPerPage: true }}
+            striped
+            persistTableHead
+            noDataComponent={<div style={{ padding: '1rem' }}>No employee data available.</div>}
 
-        <DataTable
-          columns={columns}
-          data={employees}
-          pagination
-          paginationPerPage={7}
-          paginationRowsPerPageOptions={[10, 20, 50, 100]}
-          paginationComponentOptions={{ noRowsPerPage: true }}
-          striped
-
-          customStyles={{
-            headRow: {
-              style: {
-                backgroundColor: '#1C3657',
-              }
-            },
-            table: {
-              style: {
-                border: '1px solid #ddd',
-                width: '1600px'
-              }
-            },
-            headCells: {
-              style: {
-                color: 'white',
-                fontSize: '11px'
-              }
-            }
-          }}
-        />
+          />
+        </div>
         {selectedEmployeeDetails && (
           <div className={`modal ${showDetailsModal ? 'show' : ''}`}>
-           <div className="modal-dialog">
+            <div className="modal-dialog">
               <div className="modal-content">
                 <div className="modal-body">
                   <table>

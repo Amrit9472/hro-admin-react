@@ -4,6 +4,9 @@ import  UsersService  from '../components/services/UserServices'; // make sure t
 import DataTable from 'react-data-table-component';
 import jobTitles from '../components/constants/jobProfiles'; // ✅ Job profiles import
 import { useAuth } from '../components/AuthProvider';
+import '../components/css/ScheduleInterview.css'
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 function ScheduleInterview() {
   const [employees, setEmployees] = useState([]);
@@ -79,9 +82,7 @@ function ScheduleInterview() {
     )));
   };
 
-//   const handleSubmit = (empId) => {
-//     console.log(`Submitted remark for ${empId}:`, remarks[empId]);
-//   };
+
 
 const handleSubmit = async (empId) => {
     const employee = employees.find(emp => emp.id === empId);
@@ -89,18 +90,24 @@ const handleSubmit = async (empId) => {
   
     const payload = {
       id: empId,
-      newStatus: "INTERVIEW_SCHEDULED", // replace with your actual status value or dynamic if needed
-      responseSubmitbyName: localStorage.getItem('email'), // or use auth context / user service
+      newStatus: "INTERVIEW_SCHEDULED", 
+      // responseSubmitbyName: localStorage.getItem('email'),
+      responseSubmitbyName:user.email,
       remarks: remark,
       processName: employee.selectedProcess,
       jobProfile: employee.selectedJobProfile
     };  
     try {
       await submitScheduleInterview(empId, payload);
-      alert('Interview scheduled successfully!');
+      // alert('Interview scheduled successfully!');
+      getAllEmployees();
+      toast.success('Response submitted successfully');
     } catch (error) {
-      console.error('Error submitting interview:', error.message);
-      alert('Failed to schedule interview: ' + (error?.response?.data?.message || 'Unknown error'));
+      console.error('Error submitting interview:', error.response.data);
+      // alert('Failed to schedule interview: ' + (error?.response?.data?.message || 'Unknown error'));
+      const errorMessage = error?.response?.data || 'Failed to schedule interview. Please try again.';
+
+      toast.error(errorMessage);
     }
   };
   
@@ -168,6 +175,19 @@ const handleSubmit = async (empId) => {
 
   return (
     <div className="dashboard-wrap">
+       <ToastContainer
+                className="custom-toast-container"
+                position="top-right"
+                autoClose={2000}
+                hideProgressBar={false}
+                newestOnTop={false}
+                closeOnClick
+                rtl={false}
+                pauseOnFocusLoss
+                draggable
+                pauseOnHover
+                theme="light"
+              />
       <div className="row mb-3">
         <div className="col-auto">
           <label htmlFor="filterDate" className="col-form-label">Filter by Date:</label>
@@ -185,31 +205,17 @@ const handleSubmit = async (empId) => {
           <button className="btn btn-outline-info" onClick={clearFilter}>Clear Filter</button>
         </div>
       </div>
-
+      <div className="table-responsive">
       <DataTable
         columns={columns}
         data={employees}
         pagination
-        customStyles={{
-          headRow: {
-            style: {
-              backgroundColor: '#1C3657',
-            }
-          },
-          table: {
-            style: {
-              border: '1px solid #ddd',
-              width: '100%',
-            }
-          },
-          headCells: {
-            style: {
-              color: 'white',
-              fontSize: '12px',
-            }
-          }
-        }}
+        highlightOnHover
+        responsive
+        persistTableHead
+        noDataComponent={<div style={{ padding: '1rem' }}>No employee data available.</div>} 
       />
+    </div>
     </div>
   );
 }
