@@ -1,62 +1,71 @@
-
+/* 
 .app-loyout {
-  display: flex; /* Use flexbox for layout */
-  /* height: 110vh; */
+  display: flex; 
+  
 }
 
 .side-nav {
-  width: 250px; /* Fixed width for the side navigation */
-  background-color: #1e1e2f; /* Light background color for side nav */
-  padding: 20px; /* Padding for side nav */
-  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1); /* Optional shadow for depth */
+  width: 250px; 
+  background-color: #1e1e2f; 
+  padding: 20px; 
+  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
   box-sizing: border-box;
   color: white;
 }
 
 .main-content {
-  flex: 1; /* Take up remaining space */
-  padding: 20px; /* Padding for main content */
-  background-color: white; /* White background for main content */
-  /* overflow-y: auto; */
+  flex: 1; 
+  padding: 20px; 
+  background-color: white; 
+  
 }
 
 .side-nav-header {
-  margin-bottom:5px; /* Space below the header */
+  margin-bottom:5px; 
   border-bottom: 1px solid #444;
   padding-bottom: 10px;
   background-color: aliceblue;
   border-bottom: 1px solid #ccc;
 
 }
-/* .side-nav-header {
-  padding: 10px; 
-  background-color: #f4f4f4;
-  border-bottom: 1px solid #ccc;
-} */
+
 
 .user-info {
   display: flex;
-  flex-direction: column; /* Stack labels vertically */
-}
+  flex-direction: column; 
 
 .user-name,
 .user-email {
-  margin: 5px 0; /* Add some space between labels */
-  font-size: 14px; /* Set font size */
-  color: #333; /* Text color */
+  margin: 5px 0; 
+  font-size: 14px; 
+  color: #333; 
 }
 
 
 
 .side-nav-item {
-  padding: 10px; /* Padding for each item */
-  cursor: pointer; /* Pointer cursor on hover */
-  transition: background-color 0.3s; /* Smooth background transition */
+  padding: 10px; 
+  cursor: pointer; 
+  transition: background-color 0.3s;
   border-radius: 6px;
   background-color: #2a2a3d;
   margin-bottom: 10px;
 }
 
 .side-nav-item:hover {
-  background-color: #e0e0e0; /* Change background on hover */
+  background-color: #e0e0e0; 
+}
+} */
+
+/* SideNave.css */
+.btn {
+  transition: background-color 0.3s ease;
+}
+
+.btn:hover {
+  background-color: #0056b3; /* Change on hover */
+}
+
+.btn.active {
+  background-color: #004085; /* Darker shade for the active button */
 }

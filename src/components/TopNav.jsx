@@ -1,40 +1,52 @@
-import React from 'react';
-import './css/TopNav.css';
+import React,{useState} from 'react';
+// import './css/TopNav.css';
 import { useAuth } from './AuthProvider';
 
 const TopNav = ({ role, onSelect }) => {
 console.log("top nav" ,role);
 
-const auth = useAuth()
+const auth = useAuth();
+const [activeItem, setActiveItem] = useState(null);
 const roleItems = {
-    ADMIN: ['Interview', 'User Management', 'Settings', 'Reports'], // Admin can access all
-    HR: ['Dashboard', 'Employee Management', 'Payroll'],           // HR specific items
-    MANAGER: ['Interview Schedule', 'Reports'],          // Manager specific items
-    USER: ['Profile'],                                             // Regular User sees only Profile
-    TRAINER: ['Dashboard', 'Training Programs'],                  // Trainer specific items
-    PAYROLL: ['Dashboard', 'Payroll Reports'],                    // Payroll specific items
-    ER: ['Dashboard', 'Employee Relations', 'Complaints'],        // ER specific items
+    ADMIN: ['Interview', 'User Management', 'Settings', 'Reports'], 
+    HR: ['Dashboard', 'Employee Management', 'Payroll'],           
+    MANAGER: ['Interview Schedule', 'Reports'],         
+    USER: ['Profile'],                                             
+    TRAINER: ['Dashboard', 'Training Programs'],                  
+    PAYROLL: ['Dashboard', 'Payroll Reports'],                    
+    ER: ['Dashboard', 'Employee Relations', 'Complaints'],        
   };
 
   
-  // Get navigation items for the specific role
-  const items = roleItems[role] || []; // Default to empty if role is unknown
+
+  const items = roleItems[role] || []; 
   
 const handleSelect = (item) => {
-  onSelect(item); // Invoke the onSelect function passed down as prop
+  setActiveItem(item); 
+  onSelect(item); 
 };
   return (
-    <nav className="top-nav">
-      {items.map((item) => (
-        <button key={item} onClick={() => handleSelect(item)}>
-          {item}
-        </button>
-      ))}
-       <button onClick={ () => auth.logOut() } className = "btn-submit" >
-     logout
-    </button>
-    </nav>
-  );
+
+<nav className="navbar navbar-light bg-dark" >
+    <div className="container-fluid d-flex justify-content-between">
+        <div className="d-flex">
+            {items.map((item) => (
+                <button 
+                 key={item} 
+                 type="button" 
+                 className={`btn me-2 ${activeItem === item ? 'btn-light' : 'btn-outline-success'}`} 
+                  onClick={() => handleSelect(item)}>
+                    {item}
+                </button>
+            ))}
+            </div>
+            <button className="btn btn-outline-success" type="button" onClick={() => auth.logOut()}>
+                Logout
+            </button>
+        
+    </div>
+</nav>
+);
 };
 
 export default TopNav;

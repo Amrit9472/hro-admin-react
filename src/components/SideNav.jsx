@@ -32,7 +32,7 @@ const SideNav = ({ selectedItem }) => {
       break;
     case "User Management":
       sideItems = ["Access", "Search User",
-        "Report Download","Loi"];
+        "Report Download"];
       break;
     case "Profile":
       sideItems = ["Edit Profile", "Account Settings"];
@@ -75,46 +75,83 @@ const SideNav = ({ selectedItem }) => {
         return <SelectedEmployeesTable />
       case "Access":
         return <RegisterForm />;
-      case "Loi":
-        return <LoiDropdownForm/>;
+      // case "Loi":
+      //   return <LoiDropdownForm/>;
       default:
     }
   };
 
   return (
-    <div className="app-loyout">
-      <div className="side-nav">
-        <div className="side-nav-header">
-          <div className="user-info">
-            <label className="user-name">Name : {user.name}</label>
-            <label className="user-email">Emp Id :{user?.email}</label>
-            <label className="user-email">Work location : {user?.city}</label>
-          </div>
+   
+    <div className="d-flex">
+      {/* Sidebar */}
+      <nav className="nav flex-column bg-dark text-white vh-100 p-3" style={{ width: "200px" }}>
+        <div className="user-info mb-4">
+          <h5>{user.name}</h5>
+          <p>Emp Id: {user?.email}</p>
+          <p>Work location: {user?.city}</p>
         </div>
-
-        <div className="side-nav-items">
+        <div className="nav-items">
           {sideItems.map((item) => (
-            <div
+            <button
               key={item}
-              className={`side-nav-item ${activeItem === item ? "active" : ""}`}
+              className={`btn btn-dark w-100 mb-2 d-flex justify-content-start align-item-center ${activeItem === item ? "active" : ""}`}
               onClick={() => handleClick(item)}
             >
               {item}
-            </div>
+            </button>
           ))}
         </div>
-      </div>
+      </nav>
 
-      <div className="main-content">
+      {/* Main content */}
+      <main className="flex-fill p-3">
         {activeItem ? (
-          <div key={`${activeItem}-${componentKey}`}> {/* 🔥 This forces re-render */}
+          <div key={`${activeItem}-${componentKey}`}> {/* 🔥 Forces re-render */}
             {renderComponent(activeItem)}
           </div>
         ) : (
           <div>Select an option to view content.</div>
         )}
-      </div>
+      </main>
     </div>
   );
 };
 export default SideNav;
+
+
+ //     <div className="app-loyout">
+    //       <div className="side-nav">
+    //         <div className="side-nav-header">
+    //           <div className="user-info">
+    //             <label className="user-name">Name : {user.name}</label>
+    //             <label className="user-email">Emp Id :{user?.email}</label>
+    //             <label className="user-email">Work location : {user?.city}</label>
+    //           </div>
+    //         </div>
+
+    //         <div className="side-nav-items">
+    //           {sideItems.map((item) => (
+    //             <div
+    //               key={item}
+    //               className={`side-nav-item ${activeItem === item ? "active" : ""}`}
+    //               onClick={() => handleClick(item)}
+    //             >
+    //               {item}
+    //             </div>
+    //           ))}
+    //         </div>
+    //       </div>
+
+    //       <div className="main-content">
+    //         {activeItem ? (
+    //           <div key={`${activeItem}-${componentKey}`}> {/* 🔥 This forces re-render */}
+    //             {renderComponent(activeItem)}
+    //           </div>
+    //         ) : (
+    //           <div>Select an option to view content.</div>
+    //         )}
+    //       </div>
+    //     </div>
+    //   );
+    // };

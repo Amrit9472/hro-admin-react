@@ -32,27 +32,28 @@ const Login = () => {
 
   return (
 
+    <div className="d-flex justify-content-center align-items-center vh-100">
+      <form onSubmit={handleSubmitEvent} className="w-25">
+        {error && <div className="alert alert-danger">{error}</div>}
 
-    <div className={styles.container}>
-      <form onSubmit={handleSubmitEvent}>
-        <div className="error-message">
-          {error && <div>{error}</div>}
-        </div>
-        <div className={styles.form_control}>
-          {/* <label htmlFor="user-email">Email:</label> */}
+        <div className="mb-3">
+          <label htmlFor="user-email" className="form-label">Emp ID</label>
           <input
             type="text"
+            className="form-control"
             id="user-email"
             name="email"
-            placeholder="example@yahoo.com"
+            placeholder="12XXX"
             aria-invalid="false"
             onChange={handleInput}
           />
         </div>
-        <div className={styles.form_control}>
-          {/* <label htmlFor="password">Password:</label> */}
+
+        <div className="mb-3">
+          <label htmlFor="password" className="form-label">Password</label>
           <input
             type="password"
+            className="form-control"
             id="password"
             name="password"
             aria-describedby="user-password"
@@ -60,7 +61,9 @@ const Login = () => {
             onChange={handleInput}
           />
         </div>
-        <button className="btn-submit">Submit</button>
+        <div className="d-flex justify-content-center align-items-center">
+          <button type="submit" className="btn btn-primary">Submit</button>
+        </div>
       </form>
     </div>
   );

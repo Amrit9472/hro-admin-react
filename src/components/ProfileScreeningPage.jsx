@@ -3,9 +3,10 @@ import { getProfileScreaningList, getEmployeesInformation, putResponseOnProfileS
 import DataTable from 'react-data-table-component';
 import { format } from 'date-fns';
 import { useAuth } from '../components/AuthProvider';
-import '../components/css/ProfileScreeningPage.css'
+// import '../components/css/ProfileScreeningPage.css'
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { Modal, Button } from 'react-bootstrap';
 
 function ProfileScreeningPage({ role, name }) {
   const [employees, setEmployees] = useState([]);
@@ -25,20 +26,40 @@ function ProfileScreeningPage({ role, name }) {
   const getAllEmployees = async () => {
     try {
       const response = await getProfileScreaningList(user.city);
-      let filteredEmployees = response.data;
+      let data = response.data !== undefined ? response.data : response; // handle different response structures
+
+      // Debug to verify response
+      console.log('API response data:', data);
+
+      // Ensure data is an array
+      const employeesArray = Array.isArray(data) ? data : (data?.data || []);
+
+      // Debug to verify data shape
+      console.log('Employees array after check:', employeesArray);
+
+      if (!Array.isArray(employeesArray)) {
+        // fallback
+        setEmployees([]);
+        return;
+      }
+
+      let filteredEmployees = employeesArray;
+
       if (filterDate) {
-        filteredEmployees = filteredEmployees.filter(emp =>
-          new Date(emp.creationDate).toISOString().slice(0, 10) === filterDate.toISOString().slice(0, 10)
-        );
+        filteredEmployees = filteredEmployees.filter(emp => {
+          if (!emp.creationDate) return false;
+          return (
+            new Date(emp.creationDate).toISOString().slice(0, 10) ===
+            filterDate.toISOString().slice(0, 10)
+          );
+        });
       }
       setEmployees(filteredEmployees);
-      setEmployees(response.data);
     } catch (error) {
       console.error('Error fetching employees:', error.message);
       toast.error('Failed to fetch employees. Please try again!');
     }
-  };
-
+  }
   const handleFilterChange = (e) => {
     const date = e.target.valueAsDate;
     setFilterDate(date);
@@ -68,32 +89,35 @@ function ProfileScreeningPage({ role, name }) {
 
 
 
+
   const handleHrResponseValue = async (employeeId) => {
-    const selectedValue = selectedResponse[employeeId];
-    const profileScreenRemark = profileScreenRemarks[employeeId];
-
-
-    const statusRequestDTO = {
-      newStatus: selectedValue,
-      responseSubmitbyName: name,
-      remarks: profileScreenRemark
-    };
-
     try {
+      const selectedValue = selectedResponse[employeeId];
+      const profileScreenRemark = profileScreenRemarks[employeeId];
+
+      const statusRequestDTO = {
+        newStatus: selectedValue,
+        responseSubmitbyName: name,
+        remarks: profileScreenRemark,
+      };
+
+      // Send the response
       const response = await putResponseOnProfileScreening(employeeId, statusRequestDTO);
-      setEmployees(prevEmployees =>
-        prevEmployees.map(emp =>
-          emp.id === employeeId ? response.data : emp
-        )
-      );
+      // You can check response.message or response.status if needed
+      console.log('Response message:', response.message);
+      const updatedEmployees = await getProfileScreaningList(user.city);
+      const data = Array.isArray(updatedEmployees) ? updatedEmployees : (updatedEmployees?.data || []);
+
+      setEmployees(Array.isArray(data) ? data : []);
+
+      // Reset selections
+      setSelectedResponse(prev => ({ ...prev, [employeeId]: '' }));
       toast.success('Response submitted successfully');
     } catch (error) {
-      console.error('Error submitting HR response:', error);
+      console.error('Error submitting response:', error);
       toast.error(error.response?.data || 'Failed to submit response. Please try again');
     }
   };
-
-
   const showEmployeeDetails = async (employeeId) => {
     try {
       const response = await getEmployeesInformation(employeeId);
@@ -114,6 +138,7 @@ function ProfileScreeningPage({ role, name }) {
   };
   const closeModal = () => {
     setShowDetailsModal(false);
+    setSelectedEmployeeDetails(null);
   };
 
 
@@ -174,6 +199,20 @@ function ProfileScreeningPage({ role, name }) {
       )
 
     },
+    {
+      name: 'Languages',
+      selector: row => (
+        <div>
+          {row.languages?.map((language, index) => (
+            <div key={index}>
+              {language.replace('Read:', ' (Read:').replace('Write:', ', Write:')} {/* Adjust the formatting */}
+            </div>
+          ))}
+        </div>
+      ),
+      sortable: true,
+    },
+
     {
       name: 'Gender',
       selector: row => row.gender
@@ -260,7 +299,80 @@ function ProfileScreeningPage({ role, name }) {
 
           />
         </div>
-        {selectedEmployeeDetails && (
+        <Modal
+          show={showDetailsModal}
+          onHide={closeModal}
+          size="lg"
+          centered
+          backdrop="static"
+          scrollable
+        >
+          <Modal.Header >
+            <Modal.Title>Employee Details</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            {selectedEmployeeDetails ? (
+              <>
+                <table className="table table-bordered">
+                  <tbody>
+                    <tr>
+                      <th>Full Name</th>
+                      <td>{selectedEmployeeDetails.fullName}</td>
+                    </tr>
+                    <tr>
+                      <th>Email</th>
+                      <td>{selectedEmployeeDetails.email}</td>
+                    </tr>
+                    <tr>
+                      <th>Aadhar Number</th>
+                      <td>{selectedEmployeeDetails.aadhaarNumber}</td>
+                    </tr>
+                  </tbody>
+                </table>
+                <hr />
+                {selectedEmployeeDetails.statusHistory &&
+                  selectedEmployeeDetails.statusHistory.map((history, index) => (
+                    <div key={index}>
+                      <p>
+                        <strong>Status:</strong>{' '}
+                        <span className="status" data-status={history.status}>
+                          {history.status}
+                        </span>
+                      </p>
+                      {history.hrName && (
+                        <p>
+                          <strong>Updated By:</strong> {history.hrName}
+                        </p>
+                      )}
+                      <p>
+                        <strong>Changes Date Time:</strong>{' '}
+                        {format(
+                          new Date(history.changesDateTime),
+                          'yyyy-MM-dd HH:mm:ss'
+                        )}
+                      </p>
+                      <hr />
+                    </div>
+                  ))}
+              </>
+            ) : (
+              <p>No details available.</p>
+            )}
+          </Modal.Body>
+          <Modal.Footer>
+            <Button variant="outline-primary" onClick={closeModal}>
+              Close
+            </Button>
+          </Modal.Footer>
+        </Modal>
+      </div>
+    </>
+  );
+};
+
+export default ProfileScreeningPage
+
+{/* {selectedEmployeeDetails && (
           <div className={`modal ${showDetailsModal ? 'show' : ''}`}>
             <div className="modal-dialog">
               <div className="modal-content">
@@ -295,11 +407,5 @@ function ProfileScreeningPage({ role, name }) {
               </div>
             </div>
           </div>
-        )}
-      </div>
-    </>
-  );
-};
-
-export default ProfileScreeningPage
-
+        )} */}
+{/* React Bootstrap Modal */ }

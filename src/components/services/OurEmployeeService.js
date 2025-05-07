@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const REST_API_BASE_URL = 'http://localhost:8082/api/loi';
+const REST_API_BASE_URL = 'http://localhost:8082/api/ourEmployee';
 
 // Create an Axios instance
 const apiClient = axios.create({
@@ -18,23 +18,18 @@ apiClient.interceptors.request.use(config => {
     return Promise.reject(error);
 });
 
+// Save LOI for an employee
+export const saveEmployeeLoi = async (loiData, employeeId) => {
+    try {
+     
+        const response = await apiClient.post(`/${employeeId}`, loiData, {
+            responseType: 'blob' 
+        });
 
-export const getValuesInDropDown = () => {
-    return apiClient.get('/dropDown');
-}
-
-export const getGridValues = (process, grade, companyType) => {
-    return apiClient.get('/filter', {
-      params: {
-        process: process,
-        grade: grade,
-        companyType: companyType,
-      },
-    });
-  };
-
-export const getLoiDetailsByGrid = (gridNo ,location) =>{
-  return apiClient.get(`/getDetailswithGridNo/${gridNo}/${location}`);
-}
-    
-
+        console.log('Employee LOI saved successfully:', response.data);
+        return response; 
+    } catch (error) {
+        console.error('Error saving employee LOI:', error);
+        throw error; 
+    }
+};

@@ -5,6 +5,7 @@ import Dashboard from './components/Dashboard';
 import {  BrowserRouter as Router, Route, Routes} from 'react-router-dom';
 import AuthProvider from './components/AuthProvider';
 import PrivateRoute from './components/PrivateRoute';
+import EmployeeCreatePageComponent from './components/EmployeeCreatePageComponent';
 
 function App() {
  const [role , setRole] = useState(null);
@@ -18,6 +19,7 @@ function App() {
    <AuthProvider>
         <Routes>
           <Route path="/" element={<Login />} />
+          <Route path = "/createEmployee" element = {<EmployeeCreatePageComponent/>}/>
           <Route element={<PrivateRoute />}>
             <Route path="/dashboard" element={<Dashboard />} />
           </Route>
