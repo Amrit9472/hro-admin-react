@@ -10,7 +10,7 @@ const [activeItem, setActiveItem] = useState(null);
 const roleItems = {
     ADMIN: ['Interview', 'User Management', 'Settings', 'Reports'], 
     HR: ['Dashboard', 'Employee Management', 'Payroll'],           
-    MANAGER: ['Interview Schedule', 'Reports'],         
+    MANAGER: ['Interview Schedule', 'Reports','Settings'],         
     USER: ['Profile'],                                             
     TRAINER: ['Dashboard', 'Training Programs'],                  
     PAYROLL: ['Dashboard', 'Payroll Reports'],                    

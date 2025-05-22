@@ -9,6 +9,7 @@ import { useAuth } from "../components/AuthProvider";
 import SelectedEmployeesTable from "./SelectedEmployeesTable";
 import RegisterForm from "./RegisterForm";
 import LoiDropdownForm from "./LoiDropdownForm";
+import ResetPasswordPage from "./ResetPasswordPage";
 
 const SideNav = ({ selectedItem }) => {
   const { user } = useAuth();
@@ -43,6 +44,9 @@ const SideNav = ({ selectedItem }) => {
     case "Payroll Reports":
       sideItems = ["View Salary", "Generate Reports"];
       break;
+    case "Settings":
+      sideItems=["Reset Password"];
+      break;
     default:
       sideItems = ["Default Option 1", "Default Option 2"];
       break;
@@ -75,6 +79,8 @@ const SideNav = ({ selectedItem }) => {
         return <SelectedEmployeesTable />
       case "Access":
         return <RegisterForm />;
+      case "Reset Password":
+        return<ResetPasswordPage/>;
       // case "Loi":
       //   return <LoiDropdownForm/>;
       default:

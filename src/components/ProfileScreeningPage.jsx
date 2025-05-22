@@ -3,7 +3,7 @@ import { getProfileScreaningList, getEmployeesInformation, putResponseOnProfileS
 import DataTable from 'react-data-table-component';
 import { format } from 'date-fns';
 import { useAuth } from '../components/AuthProvider';
-// import '../components/css/ProfileScreeningPage.css'
+import '../components/css/ProfileScreeningPage.css'
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { Modal, Button } from 'react-bootstrap';
@@ -285,18 +285,17 @@ function ProfileScreeningPage({ role, name }) {
             <button className="btn btn-outline-info" onClick={clearFilter}>Clear Filter</button>
           </div>
         </div>
-        <div className="table-responsive">
+        <div >
           <DataTable
             columns={columns}
             data={employees}
             pagination
-            paginationPerPage={7}
+            paginationPerPage={5}
             paginationRowsPerPageOptions={[10, 20, 50, 100]}
             paginationComponentOptions={{ noRowsPerPage: true }}
             striped
             persistTableHead
             noDataComponent={<div style={{ padding: '1rem' }}>No employee data available.</div>}
-
           />
         </div>
         <Modal
@@ -371,41 +370,3 @@ function ProfileScreeningPage({ role, name }) {
 };
 
 export default ProfileScreeningPage
-
-{/* {selectedEmployeeDetails && (
-          <div className={`modal ${showDetailsModal ? 'show' : ''}`}>
-            <div className="modal-dialog">
-              <div className="modal-content">
-                <div className="modal-body">
-                  <table>
-                    <tr>
-                      <th>Full Name</th>
-                      <td>{selectedEmployeeDetails.fullName}</td>
-                    </tr>
-                    <tr>
-                      <th>Email</th>
-                      <td>{selectedEmployeeDetails.email}</td>
-                    </tr>
-                    <tr>
-                      <th>Aadhar Number</th>
-                      <td>{selectedEmployeeDetails.aadhaarNumber}</td>
-                    </tr>
-                  </table>
-                  <hr />
-                  {selectedEmployeeDetails.statusHistory && selectedEmployeeDetails.statusHistory.map((history, index) => (
-                    <div key={index}>
-                      <p><strong>Status: </strong><span className="status" data-status={history.status}>{history.status}</span></p>
-                      {history.hrName && <p><strong>Updated By: </strong>{history.hrName}</p>}
-                      <p><strong>Changes Date Time: </strong>{format(new Date(history.changesDateTime), 'yyyy-MM-dd HH:mm:ss')}</p>
-                      <hr />
-                    </div>
-                  ))}
-                </div>
-                <div className="modal-footer">
-                  <button type="button" className="btn btn-outline-primary" onClick={closeModal}>Close</button>
-                </div>
-              </div>
-            </div>
-          </div>
-        )} */}
-{/* React Bootstrap Modal */ }

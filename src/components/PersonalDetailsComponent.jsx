@@ -98,7 +98,7 @@ const PersonalDetailsComponent = ({
                   selected={formData.dob ? new Date(formData.dob) : null}
                   onChange={(date) => handleChange("dob", date.toISOString().split('T')[0])}
                   className="form-control"
-                  placeholderText=""
+                  placeholderText="Select Dob"
                   dateFormat="MM/dd/yyyy"
                   showMonthDropdown
                   showYearDropdown

@@ -4,7 +4,6 @@ import EducationalDetailsComponent from "./EducationalDetailsComponent";
 import AdditionalDetailsComponent from "./AdditionalDetailsComponent";
 import WelcomePageComponent from "./WelcomePageComponent";
 import { creatEmployee } from "../components/services/EmployeeService";
-// import '../components/EmployeeCreatePageComponent.css';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import SuccessPageComponent from "./SuccessPageComponent";
@@ -17,6 +16,8 @@ const EmployeeCreatePageComponent = () => {
     appliedLocation:"",
     dob: null, maritalStatus: "", refferal: "", year: new Date().getFullYear(),
     file: null, 
+      aadhar: null, 
+      passport: null ,  
     source: "", subSource: "", language:"", experience: "", workExp: "", aadhaarNumber: ""
   });
   const goToHome = () => {
@@ -87,17 +88,6 @@ const EmployeeCreatePageComponent = () => {
     }));
   };
 
- // Handle language selection change
-//  const handleLanguageChange = (languages) => {
-//   const updatedLanguages = selectedLanguages.includes(languages)
-//     ? selectedLanguages.filter(lang => lang !== languages)
-//     : [...selectedLanguages, languages];
-//   setSelectedLanguages(updatedLanguages);
-//   handleChange("languages", updatedLanguages.join(', ')); 
-// };
-// EmployeeCreatePageComponent.jsx
-
-// In EmployeeCreatePageComponent.jsx
 
 const handleLanguageChange = (languageName, type, value) => {
   // Find the index of the language in the selectedLanguages array
@@ -205,7 +195,7 @@ const handleLanguageChange = (languageName, type, value) => {
     const newErrors = {};
     // const requiredFields = ['permanentAddress', 'currentAddress', 'refferal', 'file', 'aadhaarNumber', 'jobProfile'];
     //'file'
-    const requiredFields = ['permanentAddress', 'currentAddress', 'refferal', 'file', 'aadhaarNumber' ,'appliedLocation'];
+    const requiredFields = ['permanentAddress', 'currentAddress', 'refferal', 'aadhar','passport', 'aadhaarNumber' ,'appliedLocation'];
 
     requiredFields.forEach(field => {
       if (!formData[field]) {
@@ -215,8 +205,15 @@ const handleLanguageChange = (languageName, type, value) => {
       }
     });
     // Check file size if the file is provided
-    if (formData.file && formData.file.size > 3 * 1024 * 1024) { // 3MB in bytes
-      newErrors.file = 'Please upload a file size less than 3MB';
+    // if (formData.file && formData.file.size > 3 * 1024 * 1024) { // 3MB in bytes
+    //   newErrors.file = 'Please upload a file size less than 3MB';
+    // }
+
+    if (formData.aadhar && formData.aadhar.size > 3 * 1024 * 1024) {
+      newErrors.aadhar = 'Please upload a file size less than 3MB';
+    }
+    if (formData.passport && formData.passport.size > 3 * 1024 * 1024) {
+      newErrors.passport = 'Please upload a file size less than 3MB';
     }
     if (formData.refferal === "Yes" && (!formData.source || !formData.subSource)) {
       if (!formData.source) newErrors.source = '*';
@@ -253,7 +250,8 @@ const handleLanguageChange = (languageName, type, value) => {
     formDataToSend.append("employee", new Blob([JSON.stringify(formData)], { type: "application/json" }));
     formDataToSend.append("languages", new Blob([JSON.stringify(languagesData)], { type: "application/json" }));
 
-    formDataToSend.append("image", formData.file);
+    formDataToSend.append("image", formData.aadhar);
+    formDataToSend.append("image", formData.passport);
     console.log("FormData to be sent to the backend:", formDataToSend);
     creatEmployee(formDataToSend, {
       headers: {
@@ -271,7 +269,8 @@ const handleLanguageChange = (languageName, type, value) => {
            qualification: "",stream:"", mobileNo: "",
           permanentAddress: "", currentAddress: "", gender: "", previousOrganisation: "",appliedLocation:"",
           dob: null, maritalStatus: "", refferal: "", year: new Date().getFullYear(), 
-          file: null,
+            aadhar: null, 
+            passport: null ,    
           source: "", subSource: "", language: "", experience: "", aadhaarNumber: "", workExp: "",
         });
         setSelectedLanguages([]); 

@@ -12,6 +12,7 @@ const ProfileScreeningRejectedTable = () => {
     try {
       const response = await getListOfEmployeeRejectedInProfileScreening(user.city);
       setRejectedList(response.data);
+      console.log(response.data)
     } catch (error) {
       console.error('Failed to fetch rejected employees:', error);
     } finally {
@@ -47,8 +48,8 @@ const ProfileScreeningRejectedTable = () => {
     { name: 'Mobile No', selector: row => row.mobileNo },
     { name: 'Gender', selector: row => row.gender },
     { name: 'Creation Date', selector: row => new Date(row.creationDate).toLocaleDateString() },
-    { name: 'HR Remarks', selector: row => row.remarksByHr },
-    { name: 'Manager Remarks', selector: row => row.remarksByManager },
+    // { name: 'HR Remarks', selector: row => row.remarksByHr },
+    // { name: 'Manager Remarks', selector: row => row.remarksByManager },
     { name: 'Profile Screen Remarks', selector: row => row.profileScreenRemarks },
     {
         name: 'Actions',

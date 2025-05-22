@@ -5,19 +5,64 @@ import { getAllEmployeeRejectedByManager ,submitResponseOnRejectPage} from '../c
 import UsersService from '../components/services/UserServices'; // 👈 make sure this is the correct path
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { getDate } from 'date-fns';
 
 const RejectedEmployeesTable = () => {
   const { user } = useAuth();
   const [data, setData] = useState([]);
+  const [filteredData, setFilteredData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [processNames, setProcessNames] = useState([]);
   const [selectedProcesses, setSelectedProcesses] = useState({});
   const [submittingId, setSubmittingId] = useState(null);
+  const [filterDate , setFilterDate] = useState(null);
+
+
+
+  useEffect(() => {
+    if (user?.city) {
+      fetchRejectedEmployees();
+      fetchProcessNames();
+    }
+  }, [user]);
+
+
+   // Refetch or refilter data when filterDate changes
+   useEffect(() => {
+    if (data.length === 0) return;
+
+    if (filterDate) {
+      const filtered = data.filter(emp => {
+        if (!emp.creationDate) return false;
+        const empDate = new Date(emp.creationDate);
+        // compare only the date part
+        return empDate.toISOString().slice(0,10) === filterDate.toISOString().slice(0,10);
+      });
+      setFilteredData(filtered);
+    } else {
+      setFilteredData(data);
+    }
+  }, [filterDate, data]);
+
 
   const fetchRejectedEmployees = async () => {
     try {
+      setLoading(true);
       const response = await getAllEmployeeRejectedByManager(user.city);
-      setData(response.data);
+      // setData(response.data);
+      const responseData = response.data !== undefined ? response.data : response;
+      const employeesArray = Array.isArray(responseData)? responseData :responseData?.data || [];
+     
+      if(!Array.isArray(employeesArray)){
+        setData([]);
+        setFilteredData([]);
+        return;
+      }
+      setData(employeesArray);
+     
+      if(!filterDate){
+        setFilteredData(employeesArray);
+      }
     } catch (error) {
       console.error('Failed to fetch rejected employees:', error);
     } finally {
@@ -32,17 +77,27 @@ const RejectedEmployeesTable = () => {
       console.error('Failed to fetch process names:', error);
     }
   };
-  useEffect(() => {
-    if (user?.city) {
-      fetchRejectedEmployees();
-      fetchProcessNames();
 
-    }
-  }, [user]);
+  const handleFilterChange = (e) => {
+    const date = e.target.valueAsDate;
+    setFilterDate(date);
+  };
+
+  const clearFilter = () => {
+    setFilterDate(null);
+  };
+  // useEffect(() => {
+  //   if (user?.city) {
+  //     fetchRejectedEmployees();
+  //     fetchProcessNames();
+
+  //   }
+  // }, [user]);
 
   const handleProcessChange = (employeeId, process) => {
     setSelectedProcesses(prev => ({ ...prev, [employeeId]: process }));
   };
+
 
   const handleSubmit = async (employeeId) => {
     const processName = selectedProcesses[employeeId];
@@ -113,11 +168,23 @@ const RejectedEmployeesTable = () => {
   ];
 
   return (
+    <div>
+    <div className="row mb-3">
+          <div className="col-auto">
+            <label htmlFor="filterDate" className="col-form-label">Filter by Date:</label>
+          </div>
+          <div className="col-auto">
+            <input type="date" id="filterDate" className="form-control" onChange={handleFilterChange} value={filterDate ? filterDate.toISOString().split('T')[0] : ''} />
+          </div>
+          <div className="col-auto">
+            <button className="btn btn-outline-info" onClick={clearFilter}>Clear Filter</button>
+          </div>
+        </div>
     <div className="p-4">
       {/* <h2 className="text-xl font-semibold mb-4">Rejected Employees</h2> */}
       <DataTable
         columns={columns}
-        data={data}
+        data={filteredData}
         progressPending={loading}
         pagination
         highlightOnHover
@@ -125,6 +192,7 @@ const RejectedEmployeesTable = () => {
         persistTableHead
         noDataComponent={<div style={{ padding: '1rem' }}>No employee data available.</div>}
       />
+    </div>
     </div>
   );
 };

@@ -38,3 +38,6 @@ export const getLoiDetailsByGrid = (gridNo ,location) =>{
 }
     
 
+export const getDegiAndDepart = (location) => {
+ return apiClient.get(`/names-by-location/${location}`);
+}

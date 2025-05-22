@@ -83,27 +83,36 @@ const AdditionalDetailsComponent = ({
               <div className="md-2">
               <div className="d-flex justify-content-between align-items-center">
                 <label className="form-label"><strong>Aadhar upload</strong></label>
-                {errors.file && (
-                  <span className="text-danger small">{errors.file}</span>
+                {errors.aadhar && (
+                  <span className="text-danger small">{errors.aadhar}</span>
                 )}
                 </div>
                 <input
                   type="file"
                   id="image"
                   placeholder="select your Aadhar File"
-                  className={`form-control ${errors.file ? "is-invalid" : ""}`}
-                  onChange={(e) => handleChange("file", e.target.files[0])}
+                  className={`form-control ${errors.aadhar ? "is-invalid" : ""}`}
+                  onChange={(e) => handleChange("aadhar", e.target.files[0])}
                 />
+              </div>
 
 
-                {/* <input
+              <div className="md-2">
+              <div className="d-flex justify-content-between align-items-center">
+                <label className="form-label"><strong>Passport Size Image </strong></label>
+                {errors.passport && (
+                  <span className="text-danger small">{errors.passport}</span>
+                )}
+                </div>
+                <input
                   type="file"
                   id="image"
-                  placeholder="select your Aadhar File"
-                  className={`form-control ${errors.file ? "is-invalid" : ""}`}
-                  onChange={handleFileChange} // Use the new handler here
-                /> */}
+                  placeholder="select your Passport File"
+                  className={`form-control ${errors.passport ? "is-invalid" : ""}`}
+                  onChange={(e) => handleChange("passport", e.target.files[0])}
+                />
               </div>
+
               <div className="md-2">
               <div className="d-flex justify-content-between align-items-center">
                 <label className="form-label"><strong>Applied location for</strong></label>

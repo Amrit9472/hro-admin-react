@@ -61,6 +61,16 @@ class UsersService{
             throw err;
             }
         }
+
+        static async changePassword(userData) {
+            // Assuming no specific token is needed for password change
+            try {
+                const response = await UsersService.userServiceApiClient.post(`${UsersService.BASE_URL}/auth/change-password`, userData);
+                return response.data; // Return the response data from the backend
+            } catch (err) {
+                throw err; // Propagate the error to be handled where the function is called
+            }
+        }
   
 }
 export default UsersService;

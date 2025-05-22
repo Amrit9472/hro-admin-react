@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import UsersService from "../components/services/UserServices";
-import './css/RegisterForm.css'
-// Make sure to call UsersService.initialize() at app start (once)
+
+
 UsersService.initialize();
 
 const RegisterForm = () => {
@@ -52,77 +52,118 @@ const RegisterForm = () => {
   };
 
   return (
-    <div className="register-container">
-      <h2>Register</h2>
-      {message && <p>{message}</p>}
-      <form onSubmit={handleSubmit} className="register-form">
-        <input
-          type="text"
-          name="email"
-          placeholder="Email"
-          value={formData.email}
-          onChange={handleChange}
-          required
-        />
-        <input
-          type="text"
-          name="name"
-          placeholder="Full Name"
-          value={formData.name}
-          onChange={handleChange}
-          required
-        />
-        <input
-          type="password"
-          name="password"
-          placeholder="Password"
-          value={formData.password}
-          onChange={handleChange}
-          required
-        />
-        <input
-          type="text"
-          name="city"
-          placeholder="City"
-          value={formData.city}
-          onChange={handleChange}
-        />
-       <select
-    name="role"
-    value={formData.role}
-    onChange={handleChange}
-    required
-  >
-    <option value="">Select Role</option>
-    <option value="ADMIN">ADMIN</option>
-    <option value="HR">HR</option>
-    <option value="MANAGER">MANAGER</option>
-    <option value="USER">USER</option>
-    <option value="TRAINER">TRAINER</option>
-    <option value="PAYROLL">PAYROLL</option>
-    <option value="ER">ER</option>
-  </select>
+    <div className="d-flex justify-content-center align-items-center"
+      style={{ minHeight: '100vh' }}>
+      <div
+        style={{
+          width: '100%',
+          maxWidth: '2000px', // Set maximum width
+          padding: '80px',
+          boxSizing: 'border-box'
+        }}
+      >
+        <h2 className="text-center mb-3" style={{ color: 'darkgoldenrod' }}>User Access</h2>
 
-        <input
-          type="text"
-          name="process"
-          placeholder="Process"
-          value={formData.process}
-          onChange={handleChange}
-        />
-        <input
-          type="text"
-          name="processCode"
-          placeholder="Process Code"
-          value={formData.processCode}
-          onChange={handleChange}
-        />
+        {message && <p>{message}</p>}
+        <form onSubmit={handleSubmit}>
+          <div className="input-group mb-2">
+            <span class="input-group-text" id="addon-wrapping">Emp ID</span>
+            <input
+              type="text"
+              name="email"
+              className="form-control"
+              placeholder="ID should be XXXXXX"
+              value={formData.email}
+              onChange={handleChange}
+              required
+            />
+          </div>
+          <div className="input-group  mb-2">
+            <span class="input-group-text" id="addon-wrapping">Name</span>
+            <input
+              type="text"
+              name="name"
+              placeholder="Enter the Full Name"
+              className="form-control"
+              value={formData.name}
+              onChange={handleChange}
+              required
+            />
+          </div>
+          <div className="input-group mb-2">
+            <span class="input-group-text" id="addon-wrapping">password</span>
+            <input
+              type="password"
+              name="password"
+              placeholder="Should be Strong "
+              value={formData.password}
+              onChange={handleChange}
+              className="form-control"
+              required
+            />
+          </div>
+          <div className="input-group mb-2">
+            <span class="input-group-text" id="addon-wrapping">city</span>
+            <input
+              type="text"
+              name="city"
+              placeholder="City"
+              value={formData.city}
+              onChange={handleChange}
+              className="form-control"
+            />
+          </div>
+          <div className="input-group  mb-2">
+            <label class="input-group-text" for="inputGroupSelect01">Options</label>
+            <select
+              class="form-select" id="inputGroupSelect01"
+              name="role"
+              value={formData.role}
+              onChange={handleChange}
+              required
+            >
+              <option selected>Select Role</option>
+              <option value="ADMIN">ADMIN</option>
+              <option value="HR">HR</option>
+              <option value="MANAGER">MANAGER</option>
+              <option value="USER">USER</option>
+              <option value="TRAINER">TRAINER</option>
+              <option value="PAYROLL">PAYROLL</option>
+              <option value="ER">ER</option>
+            </select>
+          </div>
+          <div className="input-group mb-2">
+            <span class="input-group-text" id="addon-wrapping">Process</span>
+            <input
+              type="text"
+              name="process"
+              placeholder="Process"
+              value={formData.process}
+              onChange={handleChange}
+              className="form-control"
+            />
+          </div>
+          <div className="input-group  mb-2">
+            <span class="input-group-text" id="addon-wrapping">code</span>
+            <input
+              type="text"
+              name="processCode"
+              placeholder="Process Code"
+              value={formData.processCode}
+              onChange={handleChange}
+              className="form-control"
+            />
+          </div>
+          <div className="d-flex justify-content-center mt-4">
+            <button type="submit" disabled={loading} className="btn btn-primary text-align-center" >
+              {loading ? "Registering..." : "Register"}
+            </button>
+          </div>
+        </form>
+      </div>
 
-        <button type="submit" disabled={loading}>
-          {loading ? "Registering..." : "Register"}
-        </button>
-      </form>
     </div>
+
   );
 };
 

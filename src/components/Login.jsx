@@ -34,8 +34,9 @@ const Login = () => {
 
     <div className="d-flex justify-content-center align-items-center vh-100">
       <form onSubmit={handleSubmitEvent} className="w-25">
+      <div className="mb-3">
         {error && <div className="alert alert-danger">{error}</div>}
-
+      </div>
         <div className="mb-3">
           <label htmlFor="user-email" className="form-label">Emp ID</label>
           <input
@@ -62,7 +63,7 @@ const Login = () => {
           />
         </div>
         <div className="d-flex justify-content-center align-items-center">
-          <button type="submit" className="btn btn-primary">Submit</button>
+          <button type="submit" className="btn btn-primary">Login</button>
         </div>
       </form>
     </div>
