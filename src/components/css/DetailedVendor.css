@@ -1,0 +1,158 @@
+
+
+/* Prevent any inherited max-width or container restrictions affecting this form */
+.vendor-registration-form {
+  max-width: 800px;
+  width: 95vw;          /* Use almost full viewport width on small screens */
+  margin: 40px auto;    /* Center with vertical spacing */
+  padding: 30px 40px;
+  background-color: #ffffff;
+  border-radius: 6px;
+  box-shadow: 0 0 12px rgba(0, 0, 0, 0.1);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  box-sizing: border-box; /* Include padding in width */
+}
+
+/* Headings - centered */
+.vendor-registration-form h2,
+.vendor-registration-form h3 {
+  color: #1d3557;
+  margin-bottom: 15px;
+  font-weight: 600;
+  text-align: center;
+}
+
+/* Company Details section styling */
+.vendor-registration-form section:first-of-type {
+  background-color: #f0f4f8; /* Light subtle background */
+  padding: 25px 30px;
+  border-radius: 8px;
+  box-shadow: inset 0 0 8px rgba(21, 48, 74, 0.1);
+  margin-bottom: 40px;
+}
+
+/* Form groups spacing */
+.vendor-registration-form .form-group {
+  margin-bottom: 20px;
+}
+
+/* Labels */
+.vendor-registration-form .form-group label {
+  display: block;
+  margin-bottom: 6px;
+  font-weight: 500;
+}
+
+/* Required star */
+.vendor-registration-form .required {
+  color: red;
+}
+
+/* Inputs and textarea styling */
+.vendor-registration-form input[type="text"],
+.vendor-registration-form input[type="email"],
+.vendor-registration-form input[type="file"],
+.vendor-registration-form textarea {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 1rem;
+  font-family: inherit;
+  box-sizing: border-box;
+  transition: border-color 0.3s ease;
+}
+
+/* Input focus effect */
+.vendor-registration-form input[type="text"]:focus,
+.vendor-registration-form input[type="email"]:focus,
+.vendor-registration-form textarea:focus {
+  border-color: #457b9d;
+  outline: none;
+}
+
+/* Make textarea resizable vertically */
+.vendor-registration-form textarea {
+  resize: vertical;
+  min-height: 80px;
+}
+
+/* Error messages */
+.vendor-registration-form .error {
+  color: red;
+  font-size: 13px;
+  margin-top: 5px;
+  font-style: italic;
+}
+
+/* Buttons */
+.vendor-registration-form button {
+  padding: 10px 20px;
+  background-color: #457b9d;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-top: 10px;
+  font-weight: 600;
+  transition: background-color 0.3s ease;
+}
+
+/* Button hover */
+.vendor-registration-form button:hover {
+  background-color: #1d3557;
+}
+
+/* Section spacing */
+.vendor-registration-form section {
+  margin-bottom: 30px;
+}
+
+/* Checkbox label styling */
+.vendor-registration-form .checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 500;
+}
+
+/* Radio input spacing */
+.vendor-registration-form input[type="radio"] {
+  margin-right: 5px;
+  cursor: pointer;
+}
+
+/* Form element styling to be wider and centered */
+.vendor-registration-form form {
+  max-width: 700px;   /* Slightly less than container max-width */
+  margin: 0 auto;     /* Center horizontally */
+  padding: 20px 25px;
+  box-sizing: border-box;
+  background-color: #fafafa;  /* subtle background */
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.05);
+}
+
+/* Responsive improvements */
+@media (max-width: 600px) {
+  .vendor-registration-form {
+    padding: 20px;
+    width: 90vw;
+  }
+
+  .vendor-registration-form button {
+    width: 100%;
+  }
+
+  /* Reduce company details section padding on small screens */
+  .vendor-registration-form section:first-of-type {
+    padding: 20px;
+    margin-bottom: 30px;
+  }
+
+  /* Form padding adjustment on small screens */
+  .vendor-registration-form form {
+    max-width: 100%;
+    padding: 15px 10px;
+  }
+}

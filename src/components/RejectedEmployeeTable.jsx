@@ -8,7 +8,8 @@ import 'react-toastify/dist/ReactToastify.css';
 import { getDate } from 'date-fns';
 
 const RejectedEmployeesTable = () => {
-  const { user } = useAuth();
+  // const { user } = useAuth();
+    const { employeeUser: user } = useAuth();
   const [data, setData] = useState([]);
   const [filteredData, setFilteredData] = useState([]);
   const [loading, setLoading] = useState(true);

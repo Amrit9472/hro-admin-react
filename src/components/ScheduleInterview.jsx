@@ -19,7 +19,8 @@ function ScheduleInterview() {
   const [selectionError, setSelectionError] = useState(false);
   const [designationDepartmentOptions, setDesignationDepartmentOptions] = useState([]);
 
-  const { user } = useAuth();
+  // const { user } = useAuth();
+   const { employeeUser: user } = useAuth();
   const departments = designationDepartmentOptions.filter(item => item.type === 'Department');
   const designations = designationDepartmentOptions.filter(item => item.type === 'Designation');
 

@@ -8,15 +8,17 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { Modal, Button } from 'react-bootstrap';
 
-function ProfileScreeningPage({ role, name }) {
+function ProfileScreeningPage({role, name }) {
   const [employees, setEmployees] = useState([]);
   const [selectedResponse, setSelectedResponse] = useState({});
   const [profileScreenRemarks, setProfileScreenRemarks] = useState({});
   const [showDetailsModal, setShowDetailsModal] = useState(false);
   const [selectedEmployeeDetails, setSelectedEmployeeDetails] = useState([]);
   const [filterDate, setFilterDate] = useState(null);
-  const { user } = useAuth();
+  // const { user } = useAuth();
+  const { employeeUser: user } = useAuth();
 
+  console.log("profile page ",user)
   useEffect(() => {
     getAllEmployees();
   }, [filterDate]);
@@ -97,7 +99,7 @@ function ProfileScreeningPage({ role, name }) {
 
       const statusRequestDTO = {
         newStatus: selectedValue,
-        responseSubmitbyName: name,
+        responseSubmitbyName: user.name,
         remarks: profileScreenRemark,
       };
 

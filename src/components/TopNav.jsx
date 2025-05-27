@@ -2,11 +2,15 @@ import React,{useState} from 'react';
 // import './css/TopNav.css';
 import { useAuth } from './AuthProvider';
 
-const TopNav = ({ role, onSelect }) => {
-console.log("top nav" ,role);
+const TopNav = ({onSelect }) => {
+
 
 const auth = useAuth();
 const [activeItem, setActiveItem] = useState(null);
+
+const role = auth?.employeeUser?.role || auth?.vendorUser?.role || "GUEST";
+console.log("TopNav role:", role);
+
 const roleItems = {
     ADMIN: ['Interview', 'User Management', 'Settings', 'Reports'], 
     HR: ['Dashboard', 'Employee Management', 'Payroll'],           
@@ -40,7 +44,7 @@ const handleSelect = (item) => {
                 </button>
             ))}
             </div>
-            <button className="btn btn-outline-success" type="button" onClick={() => auth.logOut()}>
+            <button className="btn btn-outline-success" type="button" onClick={() => auth.logoutEmployee()}>
                 Logout
             </button>
         

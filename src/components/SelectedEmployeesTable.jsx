@@ -7,7 +7,8 @@ import { Modal, Button } from 'react-bootstrap';
 
 
 const SelectedEmployeesTable = () => {
-  const { user } = useAuth();
+  // const { user } = useAuth();
+  const { employeeUser: user } = useAuth();
   const [employees, setEmployees] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedEmployee, setSelectedEmployee] = useState(null);

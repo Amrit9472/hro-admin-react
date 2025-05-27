@@ -10,9 +10,12 @@ import SelectedEmployeesTable from "./SelectedEmployeesTable";
 import RegisterForm from "./RegisterForm";
 import LoiDropdownForm from "./LoiDropdownForm";
 import ResetPasswordPage from "./ResetPasswordPage";
+import VendorRegister from "./VendorRegister";
 
 const SideNav = ({ selectedItem }) => {
-  const { user } = useAuth();
+  // const { user } = useAuth();
+  const { employeeUser, vendorUser } = useAuth();
+  const user = employeeUser || vendorUser || {}; 
   const [activeItem, setActiveItem] = useState(null);
   const [componentKey, setComponentKey] = useState(0);
   let sideItems = [];
@@ -33,7 +36,7 @@ const SideNav = ({ selectedItem }) => {
       break;
     case "User Management":
       sideItems = ["Access", "Search User",
-        "Report Download"];
+        "Report Download","Vendor"];
       break;
     case "Profile":
       sideItems = ["Edit Profile", "Account Settings"];
@@ -81,6 +84,8 @@ const SideNav = ({ selectedItem }) => {
         return <RegisterForm />;
       case "Reset Password":
         return<ResetPasswordPage/>;
+      case "Vendor":
+        return<VendorRegister/>;
       // case "Loi":
       //   return <LoiDropdownForm/>;
       default:

@@ -12,7 +12,7 @@ const Login = () => {
     e.preventDefault();
     if (input.email !== "" && input.password !== "") {
       try {
-        await auth.loginAction(input);
+        await auth.loginEmployee(input);
       } catch (error) {
         setError(error?.message || "Login failed");
       }

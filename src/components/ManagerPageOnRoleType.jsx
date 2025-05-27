@@ -14,7 +14,8 @@ function ManagerPageOnRoleType() {
   const [successMessage, setSuccessMessage] = useState('');
   const [processingEmployeeId, setProcessingEmployeeId] = useState(null);
 
-  const { user } = useAuth();
+  // const { user } = useAuth();
+    const { employeeUser: user } = useAuth();
   const navigate = useNavigate();
 
   useEffect(() => {

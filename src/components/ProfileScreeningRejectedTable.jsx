@@ -4,7 +4,8 @@ import { useAuth } from '../components/AuthProvider';
 import { getListOfEmployeeRejectedInProfileScreening ,submitResponseForReScreening} from '../components/services/EmployeeService';
 
 const ProfileScreeningRejectedTable = () => {
-  const { user } = useAuth();
+  // const { user } = useAuth();
+  const { employeeUser: user } = useAuth();
   const [rejectedList, setRejectedList] = useState([]);
   const [loading, setLoading] = useState(true);
 

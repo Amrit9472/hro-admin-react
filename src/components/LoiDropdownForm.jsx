@@ -8,7 +8,8 @@ function LoiDropdownForm({ selectedEmployee, setSelectedEmployee, refreshEmploye
     const [selectedOptionFromGrid, setSelectedOptionFromGrid] = useState('');
     const [loiDetails, setLoiDetails] = useState(null);
     const [joiningDate, setJoiningDate] = useState('');
-    const { user } = useAuth();
+    // const { user } = useAuth();
+     const { employeeUser: user } = useAuth();
 
     useEffect(() => {
         console.log('Selected Employee:', selectedEmployee);

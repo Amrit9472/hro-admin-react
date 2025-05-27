@@ -12,7 +12,8 @@ const apiClient = axios.create({
 
 // Add a request interceptor to include the Bearer token
 apiClient.interceptors.request.use(config => {
-    const token = localStorage.getItem("site"); // Get the token from local storage
+    const token = localStorage.getItem("employeeToken"); // Get the token from local storage
+     console.log("Interceptor token:", token);
     if (token) {
         config.headers['Authorization'] = `Bearer ${token}`; // Attach the token as Bearer to the headers
     }
@@ -27,7 +28,13 @@ export const getProfileScreaningList = (location) => {
     return apiClient.get(`${REST_API_BASE_URL}/listOfEmpPorfileScreaning/${location}`)
 }
 
-
+// export const getProfileScreaningList = (location) => {
+//  const token = localStorage.getItem("employeeToken");
+//   console.log("Token from localStorage:", token);
+  
+//   console.log("API call location:", location);
+//     return apiClient.get(`/listOfEmpPorfileScreaning/${location}`);
+// };
 export const getEmployeesInformation = (employeeId) => {
   return apiClient.get(`${REST_API_BASE_URL}/employeeStatusTrack/${employeeId}`)
 }
