@@ -1,5 +1,5 @@
 import React from "react";
-
+import {boards10th,streams12th,graduateDegrees,postgraduateDegrees, diplomaOptions,phdOptions} from '../components/services/educationData.js'
 const EducationalDetailsComponent = ({ formData, errors, handleChange, selectedLanguages, handleLanguageChange }) => {
   const availableLanguages = ["English",
     "Hindi",
@@ -9,6 +9,47 @@ const EducationalDetailsComponent = ({ formData, errors, handleChange, selectedL
     "Marathi",
     "Other"];
 
+   const getDropdownOptions = () => {
+    switch(formData.qualification) {
+      case "10":
+        return boards10th;
+      case "12":
+        return streams12th;
+      case "graduate":
+        return graduateDegrees;
+      case "postgraduate":
+        return postgraduateDegrees;
+      case "diploma":
+      case "diploma ":
+        return diplomaOptions;
+      case "doctorate":
+      case "phd":
+        return phdOptions;
+      default:
+        return [];
+    }
+  };
+
+  // Label text depending on qualification
+  const getLabelText = () => {
+    switch(formData.qualification) {
+      case "10":
+        return "Board";
+      case "12":
+        return "Stream";
+      case "graduate":
+      case "postgraduate":
+      case "diploma":
+      case "doctorate":
+      case "phd":
+        return "Stream | Branch";
+      default:
+        return "Stream | Branch";
+    }
+  };
+
+  const dropdownOptions = getDropdownOptions();
+  const labelText = getLabelText();
   return (
     <div className="container">
       <div className="row justify-content-center">
@@ -16,7 +57,7 @@ const EducationalDetailsComponent = ({ formData, errors, handleChange, selectedL
           <div className="card p-2">
             <h2 className="text-center" >Educational Details</h2>
             <form style={{ maxWidth: '600px' }}>
-              <div className="mb-2">
+              {/* <div className="mb-2">
                 <div className="d-flex justify-content-between align-items-center">
                   <label className="form-label"><strong>Highest Qualification </strong></label>
                   {errors.qualification && (
@@ -29,7 +70,7 @@ const EducationalDetailsComponent = ({ formData, errors, handleChange, selectedL
                   value={formData.qualification}
                   onChange={(e) => handleChange("qualification", e.target.value)}
                 >
-                  <option value="" disabled>Select your qualification</option> {/* Default option */}
+                  <option value="" disabled>Select your qualification</option> 
                   <option value="10">10th</option>
                   <option value="12">12th</option>
                   <option value="graduate">Graduate</option>
@@ -38,25 +79,60 @@ const EducationalDetailsComponent = ({ formData, errors, handleChange, selectedL
                   <option value="diploma ">Diploma</option>
                   <option value="other">Other</option>
                 </select>
+              </div> */}
+  <div className="mb-2">
+                <div className="d-flex justify-content-between align-items-center">
+                  <label className="form-label"><strong>Highest Qualification </strong></label>
+                  {errors.qualification && (
+                    <span className="text-danger small">{errors.qualification}</span>
+                  )}
+                </div>
+
+                <select
+                  className={`form-control ${errors.qualification ? "is-invalid" : ""}`}
+                  value={formData.qualification}
+                  onChange={(e) => handleChange("qualification", e.target.value)}
+                >
+                  <option value="" disabled>Select your qualification</option>
+                  <option value="10">10th</option>
+                  <option value="12">12th</option>
+                  <option value="graduate">Graduate</option>
+                  <option value="postgraduate">Postgraduate</option>
+                  <option value="doctorate">Doctorate</option>
+                  <option value="diploma">Diploma</option>
+                  {/* <option value="other">Other</option> */}
+                </select>
               </div>
 
+              {/* Stream / Board dropdown (or input if no options) */}
               <div className="mb-2">
                 <div className="d-flex justify-content-between align-items-center">
-                  <label className="form-label"><strong>
-                    {formData.qualification === "10" ? "Board" : "Stream | Branch"}
-                  </strong></label>
+                  <label className="form-label"><strong>{labelText}</strong></label>
                   {errors.stream && (
                     <span className="text-danger small">{errors.stream}</span>
                   )}
                 </div>
 
-                <input
-                  type="text"
-                  placeholder={formData.qualification === "10" ? "Enter your Board" : "Enter your Education Stream"}
-                  className={`form-control ${errors.stream ? "is-invalid" : ""}`}
-                  value={formData.stream}
-                  onChange={(e) => handleChange("stream", e.target.value)}
-                />
+                {dropdownOptions.length > 0 ? (
+                  <select
+                    className={`form-control ${errors.stream ? "is-invalid" : ""}`}
+                    value={formData.stream}
+                    onChange={(e) => handleChange("stream", e.target.value)}
+                  >
+                    <option value="" disabled>{`Select your ${labelText}`}</option>
+                    {dropdownOptions.map((option, idx) => (
+                      <option key={idx} value={option}>{option}</option>
+                    ))}
+                  </select>
+                ) : (
+                  <input
+                    type="text"
+                    placeholder="Enter your Education Stream / Branch"
+                    className={`form-control ${errors.stream ? "is-invalid" : ""}`}
+                    value={formData.stream}
+                    onChange={(e) => handleChange("stream", e.target.value)}
+                  />
+                )}
               </div>
 
 

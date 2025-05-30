@@ -1,5 +1,5 @@
-import React from "react";
-
+import React, { useState, useEffect } from "react";
+import { getVendorNameByEmail } from "../components/services/EmployeeService";
 const AdditionalDetailsComponent = ({
   formData,
   errors,
@@ -11,6 +11,27 @@ const AdditionalDetailsComponent = ({
   setIsDeclarationChecked,
   // handleFileChange
 }) => {
+  const [vendorName, setVendorName] = useState("");
+
+  useEffect(() => {
+    const fetchVendorName = async () => {
+      if (formData.source === "Vendor" && formData.email) {
+        try {
+          const response = await getVendorNameByEmail(formData.email);
+          const vendor = response.data || "no vendor";
+          setVendorName(vendor); // optional, if you still want to keep vendorName state
+          handleChange("subSource", vendor); // auto-fill subSource
+        } catch (error) {
+          setVendorName("");
+          handleChange("subSource", "no vendor"); // fallback default value
+          console.error("Vendor not found", error.message);
+          alert(`Error: ${error.message}`);
+        }
+      }
+    };
+    fetchVendorName();
+  }, [formData.source, formData.email]);
+
   return (
     <div className="container">
       <div className="row justify-content-center">
@@ -19,13 +40,13 @@ const AdditionalDetailsComponent = ({
             <h2 className="text-center" style={{ color: 'darkgoldenrod' }}>Additional Details</h2>
             <form style={{ maxWidth: '600px' }}>
               <div className="mb-2">
-              <div className="d-flex justify-content-between align-items-center">
-                <label className="form-label"><strong>Permanent Address</strong></label>
-                {errors.permanentAddress && (
-                  <span className="text-danger small">
-                    {errors.permanentAddress}
-                  </span>
-                )}
+                <div className="d-flex justify-content-between align-items-center">
+                  <label className="form-label"><strong>Permanent Address</strong></label>
+                  {errors.permanentAddress && (
+                    <span className="text-danger small">
+                      {errors.permanentAddress}
+                    </span>
+                  )}
                 </div>
                 <input
                   type="text"
@@ -36,17 +57,17 @@ const AdditionalDetailsComponent = ({
                   onChange={(e) =>
                     handleChange("permanentAddress", e.target.value)
                   }
-                />               
+                />
               </div>
               <div className="mb-2">
-              <div className="d-flex justify-content-between align-items-center">
-                <label className="form-label"><strong>Current Address</strong></label>
-                {errors.currentAddress && (
-                  <span className="text-danger">
-                    {errors.currentAddress}
-                  </span>
-                )}
-               </div>
+                <div className="d-flex justify-content-between align-items-center">
+                  <label className="form-label"><strong>Current Address</strong></label>
+                  {errors.currentAddress && (
+                    <span className="text-danger">
+                      {errors.currentAddress}
+                    </span>
+                  )}
+                </div>
                 <input
                   type="text"
                   placeholder="Enter Current Address"
@@ -56,16 +77,16 @@ const AdditionalDetailsComponent = ({
                   onChange={(e) =>
                     handleChange("currentAddress", e.target.value)
                   }
-                />                
+                />
               </div>
 
               <div className="md-2">
-              <div className="d-flex justify-content-between align-items-center">
-                <label className="form-label"><strong>Aadhaar Number No</strong></label>
-                {errors.aadhaarNumber && (
-                  <span className="text-danger small">{errors.aadhaarNumber}</span>
-                )}
-               </div>
+                <div className="d-flex justify-content-between align-items-center">
+                  <label className="form-label"><strong>Aadhaar Number No</strong></label>
+                  {errors.aadhaarNumber && (
+                    <span className="text-danger small">{errors.aadhaarNumber}</span>
+                  )}
+                </div>
                 <input
                   type="text"
                   placeholder="Enter Aadhar No"
@@ -76,16 +97,16 @@ const AdditionalDetailsComponent = ({
                     handleChange("aadhaarNumber", e.target.value)
                   }
                 />
-              
+
               </div>
 
 
               <div className="md-2">
-              <div className="d-flex justify-content-between align-items-center">
-                <label className="form-label"><strong>Aadhar upload</strong></label>
-                {errors.aadhar && (
-                  <span className="text-danger small">{errors.aadhar}</span>
-                )}
+                <div className="d-flex justify-content-between align-items-center">
+                  <label className="form-label"><strong>Aadhar upload</strong></label>
+                  {errors.aadhar && (
+                    <span className="text-danger small">{errors.aadhar}</span>
+                  )}
                 </div>
                 <input
                   type="file"
@@ -98,11 +119,11 @@ const AdditionalDetailsComponent = ({
 
 
               <div className="md-2">
-              <div className="d-flex justify-content-between align-items-center">
-                <label className="form-label"><strong>Passport Size Image </strong></label>
-                {errors.passport && (
-                  <span className="text-danger small">{errors.passport}</span>
-                )}
+                <div className="d-flex justify-content-between align-items-center">
+                  <label className="form-label"><strong>Passport Size Image </strong></label>
+                  {errors.passport && (
+                    <span className="text-danger small">{errors.passport}</span>
+                  )}
                 </div>
                 <input
                   type="file"
@@ -114,35 +135,35 @@ const AdditionalDetailsComponent = ({
               </div>
 
               <div className="md-2">
-              <div className="d-flex justify-content-between align-items-center">
-                <label className="form-label"><strong>Applied location for</strong></label>
-                {errors.appliedLocation && (
-                  <span className="text-danger small">
-                    {errors.appliedLocation}
-                  </span>
-                )}
+                <div className="d-flex justify-content-between align-items-center">
+                  <label className="form-label"><strong>Applied location for</strong></label>
+                  {errors.appliedLocation && (
+                    <span className="text-danger small">
+                      {errors.appliedLocation}
+                    </span>
+                  )}
+                </div>
+                <select
+                  className={`form-control ${errors.appliedLocation ? "is-invalid" : ""}`}
+                  value={formData.appliedLocation}
+                  onChange={(e) => handleChange("appliedLocation", e.target.value)}
+                >
+                  <option value="" disabled>Select an Applied Location</option>
+                  <option value="Mumbai">Mumbai</option>
+                  <option value="Noida">Noida</option>
+                  <option value="Bangaluru">Bangaluru</option>
+                  {/* Add more options as needed */}
+                </select>
               </div>
-              <select
-                className={`form-control ${errors.appliedLocation ? "is-invalid" : ""}`}
-                value={formData.appliedLocation}
-                onChange={(e) => handleChange("appliedLocation", e.target.value)}
-              >
-                <option value="" disabled>Select an Applied Location</option>
-                <option value="Mumbai">Mumbai</option>
-                <option value="Noida">Noida</option>
-                <option value="Bangaluru">Bangaluru</option>
-                {/* Add more options as needed */}
-              </select>
-            </div>
 
 
 
               <div className="md-2">
-              <div className="d-flex justify-content-between align-items-center">
-                <label className="form-label"><strong>Reference</strong></label>
-                {errors.refferal && (
-                  <span className="text-danger">{errors.refferal}</span>
-                )}
+                <div className="d-flex justify-content-between align-items-center">
+                  <label className="form-label"><strong>Reference</strong></label>
+                  {errors.refferal && (
+                    <span className="text-danger">{errors.refferal}</span>
+                  )}
                 </div>
                 <select
                   className={`form-control ${errors.refferal ? "is-invalid" : ""}`}
@@ -153,14 +174,14 @@ const AdditionalDetailsComponent = ({
                   <option value="Yes">Yes</option>
                   <option value="No">No</option>
                 </select>
-                
+
               </div>
               {formData.refferal === "Yes" && (
                 <>
                   <div className="md-2">
-                  <div className="d-flex justify-content-between align-items-center">
-                    <label className="form-label"><strong>Source</strong></label>
-                    {errors.source && <span className="text-danger">{errors.source}</span>}
+                    <div className="d-flex justify-content-between align-items-center">
+                      <label className="form-label"><strong>Source</strong></label>
+                      {errors.source && <span className="text-danger">{errors.source}</span>}
 
                     </div>
                     <select
@@ -178,11 +199,23 @@ const AdditionalDetailsComponent = ({
                       {/* <option value="Walk In">Walk In</option> */}
                     </select>
                   </div>
+                  {formData.source === "Vendor" && (
+                    <div className="md-2">
+                      <label className="form-label"><strong>Sub Source</strong></label>
+                      <input
+                        type="text"
+                        className="form-control"
+                        name="subSource"
+                        value={formData.subSource}
+                        onChange={handleChange}
+                      />
+                    </div>
+                  )}
                   {formData.source === "Social Media" && (
                     <div className="md-2">
-                       <div className="d-flex justify-content-between align-items-center">
-                      <label className="form-label"><strong>Social Media Platform</strong></label>
-                      {errors.subSource && <span className="text-danger">{errors.subSource}</span>}
+                      <div className="d-flex justify-content-between align-items-center">
+                        <label className="form-label"><strong>Social Media Platform</strong></label>
+                        {errors.subSource && <span className="text-danger">{errors.subSource}</span>}
 
                       </div>
                       <select
@@ -201,11 +234,11 @@ const AdditionalDetailsComponent = ({
                     </div>
                   )}
 
-                  {formData.source !== "Social Media" && formData.source && (
+                  {formData.source !== "Social Media" && formData.source  !== "Vendor" && (
                     <div className="md-2">
-                       <div className="d-flex justify-content-between align-items-center">
-                      <label className="form-label"><strong>Sub Source</strong></label>
-                      {errors.subSource && <span className="text-danger">{errors.subSource}</span>}
+                      <div className="d-flex justify-content-between align-items-center">
+                        <label className="form-label"><strong>Sub Source</strong></label>
+                        {errors.subSource && <span className="text-danger">{errors.subSource}</span>}
 
                       </div>
                       <input

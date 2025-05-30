@@ -5,10 +5,26 @@ const REST_API_BASE_URL = 'http://localhost:8082/api/employees';
 const creatEmployeePostUrl = 'createEmployee';
 
 export const creatEmployee = (employee) => axios.post(REST_API_BASE_URL+'/'+creatEmployeePostUrl,employee);
+
+// export const getVendorNameByEmail = (email) => 
+//   axios.get(`${REST_API_BASE_URL}/vendor?email=${encodeURIComponent(email)}`);
+export const getVendorNameByEmail = async (email) => {
+  try {
+    return await axios.get(`${REST_API_BASE_URL}/vendor?email=${encodeURIComponent(email)}`);
+  } catch (err) {
+    if (err.response && err.response.data && err.response.data.message) {
+      // Throw a new error with the backend error message
+      throw new Error(err.response.data.message);
+    }
+    // Fallback error message
+    throw err;
+  }
+};
 // Create an Axios instance
 const apiClient = axios.create({
     baseURL: REST_API_BASE_URL,
 })
+
 
 // Add a request interceptor to include the Bearer token
 apiClient.interceptors.request.use(config => {
