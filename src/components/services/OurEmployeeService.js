@@ -9,7 +9,7 @@ const apiClient = axios.create({
 
 // Add a request interceptor to include the Bearer token
 apiClient.interceptors.request.use(config => {
-    const token = localStorage.getItem("site"); // Get the token from local storage
+    const token = localStorage.getItem("employeeToken"); // Get the token from local storage
     if (token) {
         config.headers['Authorization'] = `Bearer ${token}`; // Attach the token as Bearer to the headers
     }

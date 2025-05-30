@@ -11,7 +11,7 @@ class UsersService{
         // Attach Bearer token using interceptor
         static setupInterceptors() {
             UsersService.userServiceApiClient.interceptors.request.use(config => {
-                const token = localStorage.getItem("site");
+                const token = localStorage.getItem("employeeToken");
                 if (token) {
                     config.headers['Authorization'] = `Bearer ${token}`;
                 }
