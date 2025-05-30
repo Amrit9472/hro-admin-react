@@ -5,6 +5,8 @@ import Detailedvendor from "./Detailedvendor";
 import { postCandidatesDetails } from "./services/CandidatesService.js"; 
 import "./css/WelcomePage.css";
 import { useAuth } from './AuthProvider';
+import RaiseQuery from "./RaiseQuery";
+import CandidateSubmissionHistory from "./CandidateSubmissionHistory.jsx";  // Import the component
 
 const validateEmail = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 const validateMobile = (number) => /^[1-9][0-9]{9}$/.test(number);
@@ -12,46 +14,78 @@ const validateMobile = (number) => /^[1-9][0-9]{9}$/.test(number);
 function WelcomePage() {
   const [showBulkUpload, setShowBulkUpload] = useState(false);
   const [showDetailedVendor, setShowDetailedVendor] = useState(false);
+  const [showRaiseQuery, setShowRaiseQuery] = useState(false);
+  const [showCandidateSubmissionHistory, setShowCandidateSubmissionHistory] = useState(false);  // New state for submission history
   const [selectedFile, setSelectedFile] = useState(null);
   const [previewData, setPreviewData] = useState([]);
-  const [rows, setRows] = useState([{ name: "", mobile: "", email: "" }]);
+  const [rows, setRows] = useState([{ name: "", mobile: "", email: "", scheme: "" }]);
   const [detailedKey, setDetailedKey] = useState(0);
   const [raiseQueryKey, setRaiseQueryKey] = useState(0);
   const auth = useAuth();
+
+  // Extract vendorUser from auth
+  const { vendorUser } = auth;
+
+  const schemes = ["Scheme 1", "Scheme 2", "Scheme 3"];
 
   // Handlers to toggle views
   const handleSingleClick = () => {
     setShowBulkUpload(false);
     setShowDetailedVendor(false);
+    setShowCandidateSubmissionHistory(false);  // Hide submission history
     setSelectedFile(null);
+    setShowRaiseQuery(false);
     setPreviewData([]);
   };
 
   const handleBulkClick = () => {
     setShowBulkUpload(true);
     setShowDetailedVendor(false);
+    setShowCandidateSubmissionHistory(false);  // Hide submission history
     setSelectedFile(null);
+    setShowRaiseQuery(false);
     setPreviewData([]);
   };
 
   const handleDetailedVendorClick = () => {
     setShowDetailedVendor(true);
     setShowBulkUpload(false);
+    setShowCandidateSubmissionHistory(false);  // Hide submission history
+    setShowRaiseQuery(false);
     setSelectedFile(null);
     setPreviewData([]);
+  };
+
+  const handleRaiseQueryClick = () => {
+    setShowRaiseQuery(true);
+    setShowBulkUpload(false);
+    setShowDetailedVendor(false);
+    setShowCandidateSubmissionHistory(false);  // Hide submission history
+    setSelectedFile(null);
+    setPreviewData([]);
+    setRaiseQueryKey((prev) => prev + 1); // reset RaiseQuery component if needed
   };
 
   const handleBackToUpload = () => {
     setShowDetailedVendor(false);
     setShowBulkUpload(false);
+    setShowRaiseQuery(false);
+    setShowCandidateSubmissionHistory(false);  // Hide submission history
     setSelectedFile(null);
     setPreviewData([]);
   };
 
-   // Logout handler (navigate to LoginService.jsx - adjust as needed)
+  // New Handler for "Candidate Submission History" Button
+  const handleCandidateSubmissionHistoryClick = () => {
+    setShowCandidateSubmissionHistory(true);  // Show the Candidate Submission History section
+    setShowBulkUpload(false);
+    setShowDetailedVendor(false);
+    setShowRaiseQuery(false);
+  };
+
+  // Logout handler
   const handleLogout = () => {
-    // Replace below line with your actual routing/navigation logic:
-    window.location.href = "/vendorLogin"; // or however you route to LoginService
+    window.location.href = "/vendorLogin"; // Adjust based on your routing
   };
 
   // File selection
@@ -79,7 +113,7 @@ function WelcomePage() {
 
   // Download template Excel file
   const handleDownloadFormat = () => {
-    const worksheetData = [["candiName", "candiMobile", "candiEmail"], ["", "", ""]];
+    const worksheetData = [["candiName", "candiMobile", "candiEmail", "scheme"], ["", "", "", ""]];
     const worksheet = XLSX.utils.aoa_to_sheet(worksheetData);
     const workbook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(workbook, worksheet, "Template");
@@ -90,7 +124,7 @@ function WelcomePage() {
 
   // Form rows management for single upload
   const handleAddRow = () => {
-    setRows([...rows, { name: "", mobile: "", email: "" }]);
+    setRows([...rows, { name: "", mobile: "", email: "", scheme: "" }]);
   };
 
   const handleRemoveRow = (index) => {
@@ -110,7 +144,7 @@ function WelcomePage() {
 
     for (let i = 0; i < rows.length; i++) {
       const row = rows[i];
-      if (!row.name || !row.email || !row.mobile) {
+      if (!row.name || !row.email || !row.mobile || !row.scheme) {
         alert("Please fill out all fields.");
         return;
       }
@@ -122,19 +156,25 @@ function WelcomePage() {
         alert("Mobile number must be a 10-digit number.");
         return;
       }
+      if (!schemes.includes(row.scheme)) {
+        alert("Invalid scheme. Please select a valid scheme (Scheme 1, Scheme 2, or Scheme 3).");
+        return;
+      }
     }
 
     const payload = rows.map((row) => ({
       candiName: row.name,
       candiMobile: row.mobile,
       candiEmail: row.email,
+      scheme: row.scheme,
+      vendorEmail: vendorUser.email,
     }));
 
     try {
-      // You can add a new service method for single upload or use bulkUploadCandidates for simplicity
       const response = await postCandidatesDetails(payload);
       console.log("Single form submission successful:", response);
       alert("Vendor data submitted successfully!");
+      setRows([{ name: "", mobile: "", email: "", scheme: "" }]);
     } catch (error) {
       console.error("Error submitting vendor data:", error);
       alert("There was an error submitting the data. Please try again.");
@@ -161,24 +201,49 @@ function WelcomePage() {
       const worksheet = workbook.Sheets[sheetName];
       const jsonData = XLSX.utils.sheet_to_json(worksheet, { defval: "" });
 
-      const normalizedData = jsonData.map((row) => ({
-        candiName: row.candiName || row.Name || row.name || "",
-        candiMobile: row.candiMobile || row.Mobile || row.mobile || "",
-        candiEmail: row.candiEmail || row.Email || row.email || "",
-      }));
+      // Check for null or empty values in each row
+      const normalizedData = jsonData.map((row, index) => {
+        const candiName = row.candiName || row.Name || row.name || "";
+        const candiMobile = row.candiMobile || row.Mobile || row.mobile || "";
+        const candiEmail = row.candiEmail || row.Email || row.email || "";
+        const scheme = row.scheme || "";
 
+        // If any of the critical fields are missing or invalid, skip the row
+        if (!candiName || !candiMobile || !candiEmail || !scheme) {
+          alert(`Row ${index + 1} has missing required fields. Please correct it. Remaining rows will be uploaded.`);
+          return null;
+        }
+
+        return {
+          candiName,
+          candiMobile,
+          candiEmail,
+          scheme,
+          vendorEmail: vendorUser.email,
+        };
+      }).filter(row => row !== null); // Remove invalid rows
+
+      // Validation for email, mobile, and scheme
       for (let i = 0; i < normalizedData.length; i++) {
         const row = normalizedData[i];
         if (!validateEmail(row.candiEmail) || !validateMobile(row.candiMobile)) {
           alert(`Row ${i + 1} has invalid data. Please correct it.`);
           return;
         }
+        if (!schemes.includes(row.scheme)) {
+          alert(`Row ${i + 1} has an invalid scheme. Please select a valid scheme (Scheme 1, Scheme 2, or Scheme 3).`);
+          return;
+        }
       }
 
+      // If all data is valid, proceed with upload
       try {
         const response = await postCandidatesDetails(normalizedData);
         console.log("Bulk upload successful:", response);
         alert("Bulk upload successful.");
+        setSelectedFile(null);
+        setPreviewData([]);
+      document.querySelector('input[type="file"]').value = "";
       } catch (error) {
         console.error("Error uploading data:", error);
         alert("Error uploading data. Please try again.");
@@ -189,9 +254,8 @@ function WelcomePage() {
   };
 
   return (
-    // <div className="welcome-page-container">
-        <div className="welcome-page-container" style={{ position: "relative" }}>
-      {/* Logout button at top-right with inline styles */}
+    <div className="welcome-page-container" style={{ position: "relative" }}>
+      {/* Logout button at top-right */}
       <div
         style={{
           position: "absolute",
@@ -200,30 +264,22 @@ function WelcomePage() {
           zIndex: 1000,
         }}
       >
-                <button className="btn btn-outline-success" type="button" onClick={() => auth.logoutVendor()}>
-                Logout
-            </button>
-
-        {/* <button
-          onClick={handleLogout}
-          style={{
-            padding: "8px 16px",
-            backgroundColor: "#ff4d4f",
-            color: "white",
-            border: "none",
-            borderRadius: "4px",
-            cursor: "pointer",
-          }}
-        >
+        <button className="btn btn-outline-success" type="button" onClick={handleLogout}>
           Logout
-        </button> */}
+        </button>
       </div>
 
-
       <div className="sidebar">
-        <button onClick={handleSingleClick}>Single Upload</button>
-        <button onClick={handleBulkClick}>Bulk Upload</button>
+        {vendorUser && (
+          <div style={{ padding: "10px", marginBottom: "15px", marginLeft: "20px" }}>
+            <strong>Welcome, {vendorUser.name}</strong> | {vendorUser.email}
+          </div>
+        )}
+        <button onClick={handleSingleClick}>Single Candidate Alignment</button>
+        <button onClick={handleBulkClick}>Bulk Candidate Alignment</button>
         <button onClick={handleDetailedVendorClick}>Detailed Vendor</button>
+        <button onClick={handleCandidateSubmissionHistoryClick}>Candidate Submission History</button>
+        <button onClick={handleRaiseQueryClick}>Raise Query</button>
       </div>
 
       <div className="main-content2">
@@ -238,10 +294,11 @@ function WelcomePage() {
             </>
           ) : showBulkUpload ? (
             <>
-              <h2>Bulk Upload</h2>
+              <h2>Bulk Candidate Alignment</h2>
               <button type="button" onClick={handleDownloadFormat}>
                 Download Format
               </button>
+              <p></p>
               <input type="file" accept=".xlsx, .xls" onChange={handleFileChange} />
               <div style={{ display: "flex", gap: "10px", marginTop: "10px" }}>
                 <button type="button" onClick={handleUpload}>
@@ -277,9 +334,25 @@ function WelcomePage() {
                 </>
               )}
             </>
+          ) : showRaiseQuery ? (
+            <>
+              <h2>Raise Query</h2>
+              <RaiseQuery key={raiseQueryKey} />
+              <button type="button" onClick={handleBackToUpload}>
+                Back to Upload Options
+              </button>
+            </>
+          ) : showCandidateSubmissionHistory ? (  // Add conditional rendering for submission history
+            <>
+              <h2>Candidate Submission History</h2>
+              <CandidateSubmissionHistory /> {/* Render the Candidate Submission History component */}
+              <button type="button" onClick={handleBackToUpload}>
+                Back to Upload Options
+              </button>
+            </>
           ) : (
             <>
-              <h2>Single Upload</h2>
+              <h2>Single Candidate Alignment</h2>
               <form onSubmit={handleSubmit}>
                 <div className="form-rows">
                   {rows.map((row, index) => (
@@ -305,6 +378,18 @@ function WelcomePage() {
                         value={row.email}
                         onChange={(e) => handleChange(e, index)}
                       />
+                      <select
+                        name="scheme"
+                        value={row.scheme}
+                        onChange={(e) => handleChange(e, index)}
+                      >
+                        <option value="">Select Scheme</option>
+                        {schemes.map((scheme, idx) => (
+                          <option key={idx} value={scheme}>
+                            {scheme}
+                          </option>
+                        ))}
+                      </select>
                       {rows.length > 1 && (
                         <button type="button" onClick={() => handleRemoveRow(index)}>
                           Remove
@@ -314,10 +399,10 @@ function WelcomePage() {
                   ))}
                   <pre>
                     <button type="button" onClick={handleAddRow}>
-                    + Add Row
+                      + Add Row
                     </button>
                   </pre>
-                    <button type="submit" className="submit-btn">
+                  <button type="submit" className="submit-btn">
                     Submit
                   </button>
                 </div>

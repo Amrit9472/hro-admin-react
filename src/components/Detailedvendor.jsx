@@ -1,16 +1,18 @@
-import React, { useState, useEffect } from 'react'; 
+import React, { useState, useEffect } from 'react';
 import { useForm, useFieldArray } from 'react-hook-form';
 import Axios from 'axios';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import './css/DetailedVendor.css';
-import {postVendorInfo} from './services/VendorInfoService';
+import { postVendorInfo } from './services/VendorInfoService';
+
 function Detailedvendor() {
-  const { register, control, handleSubmit, formState: { errors }, setValue, watch } = useForm({
+  const { register, control, handleSubmit, formState: { errors }, setValue, watch, reset } = useForm({
     defaultValues: {
       directors: [{}],  // start with one director
     }
   });
+
   const { fields: directors, append, remove } = useFieldArray({
     control,
     name: 'directors',
@@ -27,32 +29,7 @@ function Detailedvendor() {
     }
   }, [serviceType, setValue]);
 
-// const onSubmit = async (data) => {
-//   try {
-//     const formData = new FormData();
-
-//     const { chequeImage, ...rest } = data;
-
-//     formData.append('form', JSON.stringify(rest));
-
-//     if (chequeImage && chequeImage.length > 0) {
-//       formData.append('chequeImage', chequeImage[0]);
-//     }
-
-//     await Axios.post('http://localhost:8082/api/vendorInfo/submit', formData, {
-//       headers: {
-//         'Content-Type': 'multipart/form-data',
-//       },
-//     });
-
-//     toast.success('Registration successful');
-//   } catch (error) {
-//     console.error(error);
-//     toast.error('Registration failed');
-//   }
-// };
-
-const onSubmit = async (data) => {
+  const onSubmit = async (data) => {
   try {
     const {
       bankName,
@@ -64,7 +41,6 @@ const onSubmit = async (data) => {
       ...rest
     } = data;
 
-    // Nest bankDetails
     const formattedData = {
       ...rest,
       bankDetails: {
@@ -73,7 +49,7 @@ const onSubmit = async (data) => {
         accountNumber,
         ifscCode,
         branchAddress,
-        chequeImagePath: null, // backend can fill this later
+        chequeImagePath: null,
       },
     };
 
@@ -84,22 +60,47 @@ const onSubmit = async (data) => {
       formData.append('chequeImage', chequeImage[0]);
     }
 
-    // await Axios.post("http://localhost:8082/api/vendorInfo/submit", formData, {
-  postVendorInfo(formData,{
-    headers: {
-    "Content-Type": "multipart/form-data",
-  },
-  withCredentials: true,
-});
-
+    await postVendorInfo(formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+      withCredentials: true,
+    });
 
     toast.success('Registration successful');
+
+    // ✅ Reset the form after successful submission
+    reset({
+      companyName: '',
+      address: '',
+      city: '',
+      pinCode: '',
+      telephone: '',
+      mobile: '',
+      email: '',
+      contactPerson: '',
+      directors: [{}], // Reset with one empty director
+      pan: '',
+      gst: '',
+      msme: '',
+      serviceType: '',
+      serviceTypeOther: '',
+      bankName: '',
+      accountName: '',
+      accountNumber: '',
+      ifscCode: '',
+      branchAddress: '',
+      chequeImage: null,
+      declaration: false,
+    });
+
+    setIsOtherService(false); // Reset "Others" toggle as well
+
   } catch (error) {
     console.error(error);
     toast.error('Registration failed');
   }
 };
-
 
   return (
     <div className="vendor-registration-form">
@@ -144,17 +145,23 @@ const onSubmit = async (data) => {
             <input
               type="text"
               placeholder="Pin Code"
-              {...register('pinCode', { required: 'Pin code is required' })}
+              {...register('pinCode', {
+                required: 'Pin code is required',
+                pattern: {
+                  value: /^\d{6}$/,
+                  message: 'Pin code must be exactly 6 digits',
+                },
+              })}
             />
             {errors.pinCode && <p className="error">{errors.pinCode.message}</p>}
           </div>
 
           <div className="form-group">
-            <label>Telephone No <span className="required">*</span></label>
+            <label>Telephone No</label>
             <input
               type="text"
               placeholder="Telephone No"
-              {...register('telephone', { required: 'Telephone number is required' })}
+              {...register('telephone')}
             />
             {errors.telephone && <p className="error">{errors.telephone.message}</p>}
           </div>
@@ -164,7 +171,13 @@ const onSubmit = async (data) => {
             <input
               type="text"
               placeholder="Mobile No"
-              {...register('mobile', { required: 'Mobile number is required' })}
+              {...register('mobile', {
+                required: 'Mobile number is required',
+                pattern: {
+                  value: /^\d{10}$/,
+                  message: 'Mobile number must be exactly 10 digits',
+                },
+              })}
             />
             {errors.mobile && <p className="error">{errors.mobile.message}</p>}
           </div>
@@ -174,7 +187,13 @@ const onSubmit = async (data) => {
             <input
               type="email"
               placeholder="E-mail Address"
-              {...register('email', { required: 'Email is required' })}
+              {...register('email', {
+                required: 'Email is required',
+                pattern: {
+                  value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
+                  message: 'Invalid email format',
+                },
+              })}
             />
             {errors.email && <p className="error">{errors.email.message}</p>}
           </div>
@@ -235,7 +254,13 @@ const onSubmit = async (data) => {
                 <input
                   type="text"
                   placeholder="Telephone/Cell No"
-                  {...register(`directors.${index}.phone`, { required: 'Phone number is required' })}
+                  {...register(`directors.${index}.phone`, {
+                    required: 'Phone number is required',
+                    pattern: {
+                      value: /^\d{10}$/,
+                      message: 'Phone number must be exactly 10 digits',
+                    },
+                  })}
                 />
                 {errors.directors?.[index]?.phone && (
                   <p className="error">{errors.directors[index].phone.message}</p>
@@ -256,7 +281,13 @@ const onSubmit = async (data) => {
             <input
               type="text"
               placeholder="PAN Number"
-              {...register('pan', { required: 'PAN is required' })}
+              {...register('pan', {
+                required: 'PAN is required',
+                pattern: {
+                  value: /^[A-Z]{5}[0-9]{4}[A-Z]{1}$/,
+                  message: 'PAN must be exactly 10 characters',
+                },
+              })}
             />
             {errors.pan && <p className="error">{errors.pan.message}</p>}
           </div>
@@ -266,7 +297,11 @@ const onSubmit = async (data) => {
             <input
               type="text"
               placeholder="GST Number"
-              {...register('gst', { required: 'GST number is required' })}
+              {...register('gst', {
+                required: 'GST number is required',
+                minLength: { value: 15, message: 'GST number must be exactly 15 characters' },
+                maxLength: { value: 15, message: 'GST number must be exactly 15 characters' },
+              })}
             />
             {errors.gst && <p className="error">{errors.gst.message}</p>}
           </div>
@@ -276,13 +311,19 @@ const onSubmit = async (data) => {
             <input
               type="text"
               placeholder="MSME Number"
-              {...register('msme', { required: 'MSME number is required' })}
+              {...register('msme', {
+                required: 'MSME number is required',
+                pattern: {
+                  value: /^\d{12}$/,
+                  message: 'MSME number must be exactly 12 digits',
+                },
+              })}
             />
             {errors.msme && <p className="error">{errors.msme.message}</p>}
           </div>
         </section>
 
-        {/* Service Type */}
+                {/* Service Type */}
         <section>
           <h3>Nature of Work / Service Provided</h3>
           <label>
@@ -314,6 +355,7 @@ const onSubmit = async (data) => {
               type="radio"
               value="Others"
               {...register('serviceType')}
+              onChange={() => setIsOtherService(true)}  // Ensures the field for "Others" is shown
             />
             Others
           </label>
@@ -324,24 +366,27 @@ const onSubmit = async (data) => {
               <input
                 type="text"
                 placeholder="Please specify"
-                {...register('serviceTypeOther')}
+                {...register('serviceTypeOther', { 
+                  required: isOtherService ? 'Please specify the other service type' : false 
+                })}
               />
+              {errors.serviceTypeOther && <p className="error">{errors.serviceTypeOther.message}</p>}
             </div>
           )}
 
           {errors.serviceType && <p className="error">{errors.serviceType.message}</p>}
         </section>
 
+
         {/* Bank Details */}
         <section>
-          <h3>NEFT / RTGS Details</h3>
-
+          <h3>Bank Details</h3>
           <div className="form-group">
             <label>Bank Name <span className="required">*</span></label>
             <input
               type="text"
               placeholder="Bank Name"
-              {...register('bankName', { required: 'Bank Name is required' })}
+              {...register('bankName', { required: 'Bank name is required' })}
             />
             {errors.bankName && <p className="error">{errors.bankName.message}</p>}
           </div>
@@ -351,7 +396,7 @@ const onSubmit = async (data) => {
             <input
               type="text"
               placeholder="Account Name"
-              {...register('accountName', { required: 'Account Name is required' })}
+              {...register('accountName', { required: 'Account name is required' })}
             />
             {errors.accountName && <p className="error">{errors.accountName.message}</p>}
           </div>
@@ -361,7 +406,7 @@ const onSubmit = async (data) => {
             <input
               type="text"
               placeholder="Account Number"
-              {...register('accountNumber', { required: 'Account Number is required' })}
+              {...register('accountNumber', { required: 'Account number is required' })}
             />
             {errors.accountNumber && <p className="error">{errors.accountNumber.message}</p>}
           </div>
@@ -371,7 +416,11 @@ const onSubmit = async (data) => {
             <input
               type="text"
               placeholder="IFSC Code"
-              {...register('ifscCode', { required: 'IFSC Code is required' })}
+              {...register('ifscCode', {
+                required: 'IFSC Code is required',
+                minLength: { value: 11, message: 'IFSC Code must be exactly 11 characters' },
+                maxLength: { value: 11, message: 'IFSC Code must be exactly 11 characters' },
+              })}
             />
             {errors.ifscCode && <p className="error">{errors.ifscCode.message}</p>}
           </div>
@@ -380,17 +429,16 @@ const onSubmit = async (data) => {
             <label>Branch Address <span className="required">*</span></label>
             <textarea
               placeholder="Branch Address"
-              {...register('branchAddress', { required: 'Branch Address is required' })}
+              {...register('branchAddress', { required: 'Branch address is required' })}
             />
             {errors.branchAddress && <p className="error">{errors.branchAddress.message}</p>}
           </div>
 
           <div className="form-group">
-            <label>Attach Cancelled Cheque <span className="required">*</span></label>
+            <label>Cancelled Cheque Image <span className="required">*</span></label>
             <input
               type="file"
-              accept="image/*"
-              {...register('chequeImage', { required: 'Cancelled cheque image is required' })}
+              {...register('chequeImage', { required: 'Cheque image is required' })}
             />
             {errors.chequeImage && <p className="error">{errors.chequeImage.message}</p>}
           </div>
@@ -404,7 +452,7 @@ const onSubmit = async (data) => {
                 type="checkbox"
                 {...register('declaration', { required: 'You must accept the declaration' })}
               />
-              I hereby declare that the information furnished in this form is correct to the best of my knowledge. I undertake to inform you at the earliest of any change in the details mentioned in this form.
+              I hereby declare that the information furnished in this form is correct to the best of my knowledge.
             </label>
             {errors.declaration && <p className="error">{errors.declaration.message}</p>}
           </div>
