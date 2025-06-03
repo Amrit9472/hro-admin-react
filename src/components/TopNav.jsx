@@ -12,7 +12,7 @@ const role = auth?.employeeUser?.role || auth?.vendorUser?.role || "GUEST";
 console.log("TopNav role:", role);
 
 const roleItems = {
-    ADMIN: ['Interview', 'User Management', 'Settings', 'Reports'], 
+    ADMIN: ['Interview', 'User Management', 'Settings', 'Reports' ,'Vendor'], 
     HR: ['Dashboard', 'Employee Management', 'Payroll'],           
     MANAGER: ['Interview Schedule', 'Reports','Settings'],         
     USER: ['Profile'],                                             

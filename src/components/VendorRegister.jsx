@@ -34,24 +34,24 @@ const VendorRegister = () => {
 
   return (
     <div style={{ maxWidth: '400px', margin: 'auto' }}>
-      <h2>Register Vendor</h2>
       {message && <p>{message}</p>}
       <form onSubmit={handleSubmit}>
-        <div>
-          <label>Address:</label><br />
-          <input type="text" name="address" value={formData.address} onChange={handleChange} />
-        </div>
+      
         <div>
           <label>Email:</label><br />
           <input type="email" name="email" value={formData.email} onChange={handleChange} required />
         </div>
         <div>
-          <label>Name:</label><br />
+          <label>Company Name:</label><br />
           <input type="text" name="name" value={formData.name} onChange={handleChange} required />
         </div>
         <div>
           <label>Password:</label><br />
           <input type="password" name="password" value={formData.password} onChange={handleChange} required />
+        </div>
+          <div>
+          <label>Location:</label><br />
+          <input type="text" name="address" value={formData.address} onChange={handleChange} />
         </div>
         <button type="submit">Register</button>
       </form>

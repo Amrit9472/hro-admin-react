@@ -13,6 +13,8 @@ import ResetPasswordPage from "./ResetPasswordPage";
 import VendorRegister from "./VendorRegister";
 import Attendance from './InductionAttendance';
 import TrainingAttendance from './TrainingBatch';
+import VendorQueryForAdmin from "./VendorQueryForAdmin";
+import VendorInfoDetailsApproveTables from "./VendorInfoDetailsApproveTables";
 
 const SideNav = ({ selectedItem }) => {
   // const { user } = useAuth();
@@ -38,7 +40,7 @@ const SideNav = ({ selectedItem }) => {
       break;
     case "User Management":
       sideItems = ["Access", "Search User",
-        "Report Download","Vendor"];
+        "Report Download"];
       break;
     case "Profile":
       sideItems = ["Edit Profile", "Account Settings"];
@@ -57,6 +59,8 @@ const SideNav = ({ selectedItem }) => {
       break;
     case "Training attendance":
       sideItems=["Training attendance"]; 
+    case "Vendor":
+      sideItems = ["Query","Vendor Details","Register"];
       break;
     default:
       sideItems = ["Default Option 1", "Default Option 2"];
@@ -92,8 +96,12 @@ const SideNav = ({ selectedItem }) => {
         return <RegisterForm />;
       case "Reset Password":
         return<ResetPasswordPage/>;
-      case "Vendor":
+      case "Register":
         return<VendorRegister/>;
+      case "Query":
+        return<VendorQueryForAdmin/>
+      case "Vendor Details":
+        return<VendorInfoDetailsApproveTables/>
       // case "Loi":
       //   return <LoiDropdownForm/>;
       case "Daily attendance":
