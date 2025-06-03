@@ -5,6 +5,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import './css/DetailedVendor.css';
 import { postVendorInfo } from './services/VendorInfoService';
+import { useAuth } from './AuthProvider';
 
 function Detailedvendor() {
   const { register, control, handleSubmit, formState: { errors }, setValue, watch, reset } = useForm({
@@ -12,6 +13,9 @@ function Detailedvendor() {
       directors: [{}],  // start with one director
     }
   });
+  
+  const auth = useAuth();
+  const { vendorUser } = auth;
 
   const { fields: directors, append, remove } = useFieldArray({
     control,
@@ -117,6 +121,8 @@ function Detailedvendor() {
               type="text"
               placeholder="Company Name"
               {...register('companyName', { required: 'Company name is required' })}
+              value={vendorUser.name}
+              readOnly
             />
             {errors.companyName && <p className="error">{errors.companyName.message}</p>}
           </div>
@@ -187,6 +193,8 @@ function Detailedvendor() {
             <input
               type="email"
               placeholder="E-mail Address"
+              value={vendorUser.email}  
+              readOnly  
               {...register('email', {
                 required: 'Email is required',
                 pattern: {
@@ -195,8 +203,8 @@ function Detailedvendor() {
                 },
               })}
             />
-            {errors.email && <p className="error">{errors.email.message}</p>}
           </div>
+
 
           <div className="form-group">
             <label>Contact Person <span className="required">*</span></label>

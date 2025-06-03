@@ -11,6 +11,8 @@ import RegisterForm from "./RegisterForm";
 import LoiDropdownForm from "./LoiDropdownForm";
 import ResetPasswordPage from "./ResetPasswordPage";
 import VendorRegister from "./VendorRegister";
+import Attendance from './InductionAttendance';
+import TrainingAttendance from './TrainingBatch';
 
 const SideNav = ({ selectedItem }) => {
   // const { user } = useAuth();
@@ -50,6 +52,12 @@ const SideNav = ({ selectedItem }) => {
     case "Settings":
       sideItems=["Reset Password"];
       break;
+    case "Attendance":
+      sideItems=["Daily attendance"];
+      break;
+    case "Training attendance":
+      sideItems=["Training attendance"]; 
+      break;
     default:
       sideItems = ["Default Option 1", "Default Option 2"];
       break;
@@ -88,6 +96,10 @@ const SideNav = ({ selectedItem }) => {
         return<VendorRegister/>;
       // case "Loi":
       //   return <LoiDropdownForm/>;
+      case "Daily attendance":
+        return<Attendance user={user}/>;
+      case "Training attendance":
+        return<TrainingAttendance user={user}/>;
       default:
     }
   };
