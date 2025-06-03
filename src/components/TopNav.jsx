@@ -16,9 +16,9 @@ const roleItems = {
     HR: ['Dashboard', 'Employee Management', 'Payroll'],           
     MANAGER: ['Interview Schedule', 'Reports','Settings'],         
     USER: ['Profile'],                                             
-    TRAINER: ['Dashboard', 'Training Programs'],                  
+    TRAINER: ['Training attendance','Dashboard', 'Training Programs'],                  
     PAYROLL: ['Dashboard', 'Payroll Reports'],                    
-    ER: ['Dashboard', 'Employee Relations', 'Complaints'],        
+    ER: ['Attendance', 'Employee Relations', 'Complaints'],        
   };
 
   
