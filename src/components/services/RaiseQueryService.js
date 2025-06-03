@@ -4,12 +4,12 @@ const REST_API_BASE_URL = 'http://localhost:8082/api/candi';
 
 const apiClient = axios.create({
     baseURL: REST_API_BASE_URL,
-    headers: {
-        'Content-Type': 'application/json',
-    },
-    timeout: 10000
+   
 });
 
+const employeeApiClient = axios.create({
+    baseURL: REST_API_BASE_URL,
+});
 // Add request interceptor for authorization token
 apiClient.interceptors.request.use(config => {
     const token = localStorage.getItem("vendorToken");
@@ -20,6 +20,14 @@ apiClient.interceptors.request.use(config => {
     return config;
 }, error => {
     return Promise.reject(error);
+});
+
+employeeApiClient.interceptors.request.use(config => {
+    const token = localStorage.getItem("employeeToken");
+    if (token) {
+        config.headers['Authorization'] = `Bearer ${token}`;
+    }
+    return config;
 });
 
 // Function to submit a query
@@ -72,3 +80,16 @@ export const getManagerStatusByEmail = (email) => {
         return "Pending";
     });
 }
+
+export const getAllQueryForAdminPage = () => {
+    return employeeApiClient.get(`${REST_API_BASE_URL}/getAllQueryForAdmin`)
+}
+
+export const updateVendorQueryStatus = (id, payload,) => {
+  return employeeApiClient.put(`${REST_API_BASE_URL}/${id}/status`,payload);
+};
+
+
+export const getAllStatuses = () => {
+  return employeeApiClient.get(`${REST_API_BASE_URL}/vendor-statuses`);
+};
