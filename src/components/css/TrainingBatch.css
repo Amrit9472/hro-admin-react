@@ -88,7 +88,7 @@ tbody tr:hover {
 }
 
 /* === Modal container with solid background (no overlay) === */
-.modal {
+ /* .modal {
   position: fixed;
   top: 50%;
   left: 50%;
@@ -102,7 +102,7 @@ tbody tr:hover {
   color: #333;
   z-index: 1000;
   animation: fadeInScale 0.3s ease forwards;
-}
+}  */
 
 /* Simple fade & scale animation for the modal */
 @keyframes fadeInScale {

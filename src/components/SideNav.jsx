@@ -59,6 +59,7 @@ const SideNav = ({ selectedItem }) => {
       break;
     case "Training attendance":
       sideItems=["Training attendance"]; 
+      break;
     case "Vendor":
       sideItems = ["Query","Vendor Details","Register"];
       break;
