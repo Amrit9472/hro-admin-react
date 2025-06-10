@@ -9,6 +9,8 @@ import EmployeeCreatePageComponent from './components/EmployeeCreatePageComponen
 import VendorLogin from './components/VendorLogin';
 import WelcomePage from './components/WelcomePage';
 import Attendance from './components/InductionAttendance';
+import TrainingAttendance from './components/TrainingAttendance';
+import TrainingScore from './components/TrainingScore';
 
 function App() {
   // const [role, setRole] = useState(null);
@@ -25,6 +27,8 @@ function App() {
           <Route path="/createEmployee" element={<EmployeeCreatePageComponent />} />
           <Route path="/vendorLogin" element={<VendorLogin />} />
           <Route path="/Attendance" element={<Attendance/>} />
+          <Route path="trainingattendance" element={<TrainingAttendance/>}/>
+          <Route path="trainingscore" element={<TrainingScore/>}/>
 
           <Route element={<PrivateRoute />}>
             <Route path="/dashboard" element={<Dashboard />} />

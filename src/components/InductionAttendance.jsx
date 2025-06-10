@@ -52,7 +52,7 @@ const Attendance = () => {
       process,
       status: attendance[emp.employeeId] || 'Absent',
       marker,
-      type:"Induction",
+       type: "INDUCTION",
     }));
 
     saveAttendance(records)
@@ -75,7 +75,7 @@ const Attendance = () => {
       {/* Filters */}
       <div style={{ display: 'flex', gap: '20px', marginBottom: '20px' }}>
         <div>
-          <label>Date:</label><br />
+          <label>Joining Date:</label><br />
           <input
             type="date"
             value={date}

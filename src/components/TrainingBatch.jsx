@@ -9,16 +9,16 @@ import {
 } from './services/TrainingBatchService.js';
 import './css/TrainingBatch.css';
 
-const TrainingAttendance = () => {
+const TrainingBatch = () => {
   const [processes, setProcesses] = useState([]);
   const [selectedProcess, setSelectedProcess] = useState('');
   const [candidates, setCandidates] = useState([]);
+  const [selectedCandidateIds, setSelectedCandidateIds] = useState([]);
 
   const { employeeUser } = useAuth();
   const user = employeeUser;
 
   const [showModal, setShowModal] = useState(false);
-
   const [formData, setFormData] = useState({
     trainingStartDate: '',
     faculty: '',
@@ -42,10 +42,20 @@ const TrainingAttendance = () => {
   useEffect(() => {
     if (selectedProcess) {
       getCandidatesByProcess(selectedProcess)
-        .then(res => setCandidates(res.data))
-        .catch(() => setCandidates([]));
+        .then(res => {
+          const allCandidates = res.data;
+          const trainingCandidates = allCandidates.filter(c => c.type === "TRAINING");
+
+          setCandidates(trainingCandidates);
+          setSelectedCandidateIds(trainingCandidates.map(c => c.employeeId));
+        })
+        .catch(() => {
+          setCandidates([]);
+          setSelectedCandidateIds([]);
+        });
     } else {
       setCandidates([]);
+      setSelectedCandidateIds([]);
     }
   }, [selectedProcess]);
 
@@ -128,6 +138,11 @@ const TrainingAttendance = () => {
       return;
     }
 
+    if (selectedCandidateIds.length === 0) {
+      alert('No candidates available to submit.');
+      return;
+    }
+
     setLoading(true);
 
     try {
@@ -152,15 +167,19 @@ const TrainingAttendance = () => {
         totalMarks: Number(formData.totalMarks),
         passingMarks: Number(formData.passingMarks),
         certificateRequired: formData.certificateRequired === 'yes',
+        candidateIds: selectedCandidateIds,
       };
 
       await submitTrainingBatch(payload);
       alert(`Details submitted successfully! Batch ID: ${batchId}`);
       closeModal();
 
-      getCandidatesByProcess(selectedProcess)
-        .then(res => setCandidates(res.data))
-        .catch(() => setCandidates([]));
+      const updatedCandidatesRes = await getCandidatesByProcess(selectedProcess);
+      const allUpdatedCandidates = updatedCandidatesRes.data;
+      const trainingUpdatedCandidates = allUpdatedCandidates.filter(c => c.type === "TRAINING");
+
+      setCandidates(trainingUpdatedCandidates);
+      setSelectedCandidateIds(trainingUpdatedCandidates.map(c => c.employeeId));
     } catch (error) {
       console.error('Submit error:', error);
       alert('Failed to submit details. Please try again.');
@@ -169,12 +188,11 @@ const TrainingAttendance = () => {
     }
   };
 
-  const todayStr = new Date().toISOString().split('T')[0]; // YYYY-MM-DD format
+  const todayStr = new Date().toISOString().split('T')[0];
 
   return (
     <div className="training-attendance-container">
       <h2>Training Batch ID Creation</h2>
-    <pre> </pre>
       <div className="filter-section">
         <label htmlFor="processFilter">Filter by Process:</label>
         <select id="processFilter" value={selectedProcess} onChange={onProcessChange}>
@@ -203,11 +221,15 @@ const TrainingAttendance = () => {
               </td>
             </tr>
           ) : (
-            candidates.map((c) => (
-              <tr key={`${c.fullName}-${c.process}`}>
+            candidates.map((c, index) => (
+              <tr key={`${c.employeeId}-${index}`}>
                 <td>{c.fullName}</td>
                 <td>{c.process}</td>
-                <td>{c.inductionCompleteDate ? new Date(c.inductionCompleteDate).toLocaleDateString() : '-'}</td>
+                <td>
+                  {c.inductionCompleteDate
+                    ? new Date(c.inductionCompleteDate).toLocaleDateString()
+                    : '-'}
+                </td>
               </tr>
             ))
           )}
@@ -257,14 +279,14 @@ const TrainingAttendance = () => {
             </div>
 
             <div className="form-group">
-              <label>Maximum Number of Attempts:</label>
+              <label>Max Attempts:</label>
               <input
                 type="number"
                 name="maxAttempts"
-                value={formData.maxAttempts}
-                onChange={onInputChange}
                 min="1"
                 max="5"
+                value={formData.maxAttempts}
+                onChange={onInputChange}
                 disabled={loading}
               />
               {formErrors.maxAttempts && (
@@ -273,14 +295,14 @@ const TrainingAttendance = () => {
             </div>
 
             <div className="form-group">
-              <label>Total Marks of the Exam:</label>
+              <label>Total Marks:</label>
               <input
                 type="number"
                 name="totalMarks"
-                value={formData.totalMarks}
-                onChange={onInputChange}
                 min="1"
                 max="200"
+                value={formData.totalMarks}
+                onChange={onInputChange}
                 disabled={loading}
               />
               {formErrors.totalMarks && (
@@ -293,10 +315,9 @@ const TrainingAttendance = () => {
               <input
                 type="number"
                 name="passingMarks"
+                min="1"
                 value={formData.passingMarks}
                 onChange={onInputChange}
-                min="1"
-                max={formData.totalMarks || 200}
                 disabled={loading}
               />
               {formErrors.passingMarks && (
@@ -305,29 +326,37 @@ const TrainingAttendance = () => {
             </div>
 
             <div className="form-group">
-              <label>Is Certificate Required:</label>
+              <label>Certificate Required:</label>
               <select
                 name="certificateRequired"
                 value={formData.certificateRequired}
                 onChange={onInputChange}
                 disabled={loading}
               >
-                <option value="no">No</option>
                 <option value="yes">Yes</option>
+                <option value="no">No</option>
               </select>
               {formErrors.certificateRequired && (
                 <div className="error-msg">{formErrors.certificateRequired}</div>
               )}
             </div>
 
-            <div className="modal-buttons">
-              <button onClick={onSubmit} disabled={loading}>
-                {loading ? 'Submitting...' : 'Submit'}
-              </button>
-              <button onClick={closeModal} className="cancel-btn" disabled={loading}>
-                Cancel
-              </button>
+            <div className="form-group">
+              <label>All Candidates Included:</label>
+              <ul>
+                {candidates.map((c) => (
+                  <li key={`${c.employeeId}`}>{c.fullName}</li>
+                ))}
+              </ul>
             </div>
+
+            <button onClick={onSubmit} disabled={loading}>
+              {loading ? 'Submitting...' : 'Submit'}
+            </button>
+
+            <button onClick={closeModal} disabled={loading}>
+              Cancel
+            </button>
           </div>
         </div>
       )}
@@ -335,4 +364,4 @@ const TrainingAttendance = () => {
   );
 };
 
-export default TrainingAttendance;
+export default TrainingBatch;

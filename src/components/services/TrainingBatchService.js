@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const REST_API_BASE_URL = "http://localhost:8082/api/training-attendance";
+const REST_API_BASE_URL = "http://localhost:8082/api/training-batch";
 
 const apiClient = axios.create({
   baseURL: REST_API_BASE_URL,
@@ -29,12 +29,10 @@ export const submitTrainingBatch = (batchDetails) => {
   return apiClient.post("/batch", batchDetails);
 };
 
-// Fetch process code by process name
 export const getProcessCode = (process) => {
   return apiClient.get("/process-code", { params: { process } });
 };
 
-// Fetch next serial number for a given location + process + processCode prefix
 export const getNextBatchSerial = (prefix) => {
   return apiClient.get("/next-batch-serial", { params: { prefix } });
 };

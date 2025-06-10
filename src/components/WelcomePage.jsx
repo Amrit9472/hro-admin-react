@@ -277,7 +277,7 @@ function WelcomePage() {
         )}
         <button onClick={handleSingleClick}>Single Candidate Alignment</button>
         <button onClick={handleBulkClick}>Bulk Candidate Alignment</button>
-        <button onClick={handleDetailedVendorClick}>Detailed Vendor</button>
+        <button onClick={handleDetailedVendorClick}>Detailed Vendor Form</button>
         <button onClick={handleCandidateSubmissionHistoryClick}>Candidate Submission History</button>
         <button onClick={handleRaiseQueryClick}>Raise Query</button>
       </div>

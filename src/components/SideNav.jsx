@@ -12,12 +12,13 @@ import LoiDropdownForm from "./LoiDropdownForm";
 import ResetPasswordPage from "./ResetPasswordPage";
 import VendorRegister from "./VendorRegister";
 import Attendance from './InductionAttendance';
-import TrainingAttendance from './TrainingBatch';
+import TrainingBatch from './TrainingBatch';
 import VendorQueryForAdmin from "./VendorQueryForAdmin";
 import VendorInfoDetailsApproveTables from "./VendorInfoDetailsApproveTables";
+import TrainingAttendance from "./TrainingAttendance";
+import TrainingScore from "./TrainingScore";
 
 const SideNav = ({ selectedItem }) => {
-  // const { user } = useAuth();
   const { employeeUser, vendorUser } = useAuth();
   const user = employeeUser || vendorUser || {}; 
   const [activeItem, setActiveItem] = useState(null);
@@ -58,7 +59,7 @@ const SideNav = ({ selectedItem }) => {
       sideItems=["Daily attendance"];
       break;
     case "Training attendance":
-      sideItems=["Training attendance"]; 
+      sideItems=["Training Batch", "Training Attendance", "Training Score"]; 
       break;
     case "Vendor":
       sideItems = ["Query","Vendor Details","Register"];
@@ -75,9 +76,7 @@ const SideNav = ({ selectedItem }) => {
       setActiveItem(item);
       setComponentKey(0);
     }
-
   };
-
 
   const renderComponent = (item) => {
     switch (item) {
@@ -103,18 +102,19 @@ const SideNav = ({ selectedItem }) => {
         return<VendorQueryForAdmin/>
       case "Vendor Details":
         return<VendorInfoDetailsApproveTables/>
-      // case "Loi":
-      //   return <LoiDropdownForm/>;
       case "Daily attendance":
         return<Attendance user={user}/>;
-      case "Training attendance":
+      case "Training Batch":
+        return<TrainingBatch user={user}/>;
+      case "Training Attendance":
         return<TrainingAttendance user={user}/>;
+      case "Training Score":
+        return<TrainingScore user={user}/>;
       default:
     }
   };
 
   return (
-   
     <div className="d-flex">
       {/* Sidebar */}
       <nav className="nav flex-column bg-dark text-white vh-100 p-3" style={{ width: "200px" }}>
@@ -149,7 +149,9 @@ const SideNav = ({ selectedItem }) => {
     </div>
   );
 };
+
 export default SideNav;
+
 
 
  //     <div className="app-loyout">
