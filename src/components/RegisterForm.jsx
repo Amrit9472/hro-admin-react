@@ -7,6 +7,7 @@ UsersService.initialize();
 const RegisterForm = () => {
   const [formData, setFormData] = useState({
     email: "",
+    officeEmail:"",
     name: "",
     password: "",
     city: "",
@@ -36,6 +37,7 @@ const RegisterForm = () => {
       console.log("Response:", res);
       setFormData({
         email: "",
+        officeEmail:"",
         name: "",
         password: "",
         city: "",
@@ -74,6 +76,18 @@ const RegisterForm = () => {
               className="form-control"
               placeholder="ID should be XXXXXX"
               value={formData.email}
+              onChange={handleChange}
+              required
+            />
+          </div>
+          <div className="input-group mb-2">
+            <span class="input-group-text" id="addon-wrapping">Email</span>
+            <input
+              type="text"
+              name="officeEmail"
+              className="form-control"
+              // placeholder="ID should be XXXXXX"
+              value={formData.officeEmail}
               onChange={handleChange}
               required
             />

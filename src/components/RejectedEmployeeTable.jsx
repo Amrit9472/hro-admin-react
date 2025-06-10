@@ -27,8 +27,6 @@ const RejectedEmployeesTable = () => {
     }
   }, [user]);
 
-
-   // Refetch or refilter data when filterDate changes
    useEffect(() => {
     if (data.length === 0) return;
 
@@ -36,7 +34,7 @@ const RejectedEmployeesTable = () => {
       const filtered = data.filter(emp => {
         if (!emp.creationDate) return false;
         const empDate = new Date(emp.creationDate);
-        // compare only the date part
+      
         return empDate.toISOString().slice(0,10) === filterDate.toISOString().slice(0,10);
       });
       setFilteredData(filtered);
@@ -50,7 +48,6 @@ const RejectedEmployeesTable = () => {
     try {
       setLoading(true);
       const response = await getAllEmployeeRejectedByManager(user.city);
-      // setData(response.data);
       const responseData = response.data !== undefined ? response.data : response;
       const employeesArray = Array.isArray(responseData)? responseData :responseData?.data || [];
      
@@ -73,7 +70,7 @@ const RejectedEmployeesTable = () => {
   const fetchProcessNames = async () => {
     try {
       const processList = await UsersService.getAllProcessNameCode();
-      setProcessNames(processList); // should be an array of strings or objects
+      setProcessNames(processList);
     } catch (error) {
       console.error('Failed to fetch process names:', error);
     }
@@ -87,14 +84,7 @@ const RejectedEmployeesTable = () => {
   const clearFilter = () => {
     setFilterDate(null);
   };
-  // useEffect(() => {
-  //   if (user?.city) {
-  //     fetchRejectedEmployees();
-  //     fetchProcessNames();
-
-  //   }
-  // }, [user]);
-
+ 
   const handleProcessChange = (employeeId, process) => {
     setSelectedProcesses(prev => ({ ...prev, [employeeId]: process }));
   };
@@ -135,7 +125,7 @@ const RejectedEmployeesTable = () => {
       name: 'Process Name',
       cell: row => (
         <select
-          className="border rounded px-2 py-1"
+          className="border rounded"
           value={selectedProcesses[row.id] || ''}
           onChange={e => handleProcessChange(row.id, e.target.value)}
         >
@@ -145,6 +135,7 @@ const RejectedEmployeesTable = () => {
           ))}
         </select>
       ),
+       width:'200px',
       ignoreRowClick: true,
       allowOverflow: true,
       button: true,
@@ -154,13 +145,14 @@ const RejectedEmployeesTable = () => {
       name: 'Action',
       cell: row => (
         <button
-          className="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded"
+          className="btn btn-primary"
           onClick={() => handleSubmit(row.id)}
           disabled={submittingId === row.id}
         >
           {submittingId === row.id ? 'Submitting...' : 'Submit'}
         </button>
       ),
+      width:'200px',
       ignoreRowClick: true,
       allowOverflow: true,
       button: true,
@@ -182,7 +174,7 @@ const RejectedEmployeesTable = () => {
           </div>
         </div>
     <div className="p-4">
-      {/* <h2 className="text-xl font-semibold mb-4">Rejected Employees</h2> */}
+   
       <DataTable
         columns={columns}
         data={filteredData}

@@ -19,6 +19,7 @@ const VendorQueryForAdmin = () => {
         setQueries(queryResponse.data);
         setStatusOptions(statusResponse.data);
         setLoading(false);
+        console.log("queryResponse.data" ,queryResponse.data)
       })
       .catch((error) => {
         console.error('Error loading data:', error);
@@ -91,7 +92,9 @@ const VendorQueryForAdmin = () => {
           </tr>
         </thead>
         <tbody>
-          {queries.map((query) => (
+          {queries.map((query) => {
+            const isClosed = query.vendorQueryStatus === 'CLOSED';
+            return (
             <tr key={query.id}>
               <td>{query.id}</td>
               <td>{query.vendorEmail}</td>
@@ -103,6 +106,7 @@ const VendorQueryForAdmin = () => {
                 <select
                   value={selectedStatuses[query.id] || ""}
                   onChange={(e) => handleStatusChange(query.id, e.target.value)}
+                disabled={isClosed}
                 >
                   <option value="" disabled>
                     Select
@@ -120,18 +124,21 @@ const VendorQueryForAdmin = () => {
                   placeholder="Enter remark"
                   value={remarks[query.id] || ""}
                   onChange={(e) => handleRemarkChange(query.id, e.target.value)}
+                  disabled={isClosed}
                 />
               </td>
               <td>
                 <button
                   onClick={() => handleSubmit(query.id)}
-                  disabled={!selectedStatuses[query.id]}
+                  // disabled={!selectedStatuses[query.id]}
+                   disabled={isClosed || !selectedStatuses[query.id]} 
                 >
                   Submit
                 </button>
               </td>
             </tr>
-          ))}
+          );
+          })}
         </tbody>
       </table>
     </div>

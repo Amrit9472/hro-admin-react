@@ -1,5 +1,5 @@
 import React from "react";
-import {boards10th,streams12th,graduateDegrees,postgraduateDegrees, diplomaOptions,phdOptions} from '../components/services/educationData.js'
+import { boards10th, streams12th, graduateDegrees, postgraduateDegrees, diplomaOptions, phdOptions } from '../components/services/educationData.js'
 const EducationalDetailsComponent = ({ formData, errors, handleChange, selectedLanguages, handleLanguageChange }) => {
   const availableLanguages = ["English",
     "Hindi",
@@ -9,8 +9,8 @@ const EducationalDetailsComponent = ({ formData, errors, handleChange, selectedL
     "Marathi",
     "Other"];
 
-   const getDropdownOptions = () => {
-    switch(formData.qualification) {
+  const getDropdownOptions = () => {
+    switch (formData.qualification) {
       case "10":
         return boards10th;
       case "12":
@@ -32,7 +32,7 @@ const EducationalDetailsComponent = ({ formData, errors, handleChange, selectedL
 
   // Label text depending on qualification
   const getLabelText = () => {
-    switch(formData.qualification) {
+    switch (formData.qualification) {
       case "10":
         return "Board";
       case "12":
@@ -80,7 +80,7 @@ const EducationalDetailsComponent = ({ formData, errors, handleChange, selectedL
                   <option value="other">Other</option>
                 </select>
               </div> */}
-  <div className="mb-2">
+              <div className="mb-2">
                 <div className="d-flex justify-content-between align-items-center">
                   <label className="form-label"><strong>Highest Qualification </strong></label>
                   {errors.qualification && (
@@ -198,7 +198,7 @@ const EducationalDetailsComponent = ({ formData, errors, handleChange, selectedL
                 />
 
               </div>
-            
+
 
 
               <div className="mb-3">
@@ -220,16 +220,16 @@ const EducationalDetailsComponent = ({ formData, errors, handleChange, selectedL
                 </div>
 
                 {/* This is the container with fixed height and scrolling */}
-                <div className="language-list-scroll" style={{ maxHeight: '200px', overflowY: 'auto', border: '1px solid #dee2e6', padding: '10px', borderRadius: '0.25rem' }}>
+                {/* <div className="language-list-scroll" style={{ maxHeight: '200px', overflowY: 'auto', border: '1px solid #dee2e6', padding: '10px', borderRadius: '0.25rem' }}>
                   {availableLanguages.map((language) => {
                     const selectedLang = selectedLanguages.find(lang => lang.languageName === language);
                     const isSelected = !!selectedLang;
 
                     return (
-                      <div key={language} className="d-flex align-items-center mb-2"> {/* Use d-flex for the language row */}
+                      <div key={language} className="d-flex align-items-center mb-2"> 
 
-                        {/* Main Language Checkbox and Label (acting as the "Language" column) */}
-                        <div className="form-check d-flex align-items-center" style={{ width: '150px', flexShrink: 0 }}> {/* Match header width */}
+                       
+                        <div className="form-check d-flex align-items-center" style={{ width: '150px', flexShrink: 0 }}>
                           <input
                             type="checkbox"
                             className="form-check-input me-2"
@@ -243,39 +243,87 @@ const EducationalDetailsComponent = ({ formData, errors, handleChange, selectedL
                         </div>
 
 
-                        {/* Read/Write Checkboxes (conditionally rendered, acting as the "Read" and "Write" columns) */}
+                       
                         <div className="d-flex align-items-center">
-                          {/* Can Read Checkbox */}
-                          <div className="form-check me-3" style={{ width: '80px', flexShrink: 0 }}> {/* Match header width and spacing */}
+                         
+                          <div className="form-check me-3" style={{ width: '80px', flexShrink: 0 }}> 
                             <input
                               type="checkbox"
                               className="form-check-input"
                               id={`${language}-read`}
-                              checked={isSelected && selectedLang.canRead} // Ensure checkboxes are only checked if language is selected
+                              checked={isSelected && selectedLang.canRead} 
                               onChange={(e) => handleLanguageChange(language, 'canRead', e.target.checked)}
-                              disabled={!isSelected} // Disable if language is not selected
+                              disabled={!isSelected} 
                             />
-                            <label className="form-check-label visually-hidden" htmlFor={`${language}-read`}>Can Read for {language}</label> {/* Add visually-hidden for accessibility */}
+                            <label className="form-check-label visually-hidden" htmlFor={`${language}-read`}>Can Read for {language}</label> 
                           </div>
 
-                          {/* Can Write Checkbox */}
-                          <div className="form-check" style={{ width: '80px', flexShrink: 0 }}> {/* Match header width */}
+
+                          <div className="form-check" style={{ width: '80px', flexShrink: 0 }}> 
                             <input
                               type="checkbox"
                               className="form-check-input"
                               id={`${language}-write`}
-                              checked={isSelected && selectedLang.canWrite} // Ensure checkboxes are only checked if language is selected
+                              checked={isSelected && selectedLang.canWrite} 
                               onChange={(e) => handleLanguageChange(language, 'canWrite', e.target.checked)}
-                              disabled={!isSelected} // Disable if language is not selected
-                            />
-                            <label className="form-check-label visually-hidden" htmlFor={`${language}-write`}>Can Write for {language}</label> {/* Add visually-hidden for accessibility */}
+                              disabled={!isSelected} 
+                                                          />
+                            <label className="form-check-label visually-hidden" htmlFor={`${language}-write`}>Can Write for {language}</label> 
                           </div>
                         </div>
 
+                      </div> 
+                    );
+                  })}*/}
+                <div className="language-list-scroll" style={{ maxHeight: '200px', overflowY: 'auto', border: '1px solid #dee2e6', padding: '10px', borderRadius: '0.25rem' }}>
+                  {availableLanguages.map((language) => {
+                    const selectedLang = selectedLanguages.find(lang => lang.languageName === language);
+                    const canRead = selectedLang ? selectedLang.canRead : false;
+                    const canWrite = selectedLang ? selectedLang.canWrite : false;
+                    const isSelected = canRead && canWrite; // Only consider it selected if both are true
+
+                    return (
+                      <div key={language} className="d-flex align-items-center mb-2">
+
+                        {/* Language Name (Without Main Checkbox) */}
+                        <div className="form-check d-flex align-items-center" style={{ width: '150px', flexShrink: 0 }}>
+                          <label className="form-check-label" htmlFor={language}>
+                            {language}
+                          </label>
+                        </div>
+
+                        {/* Read/Write Checkboxes */}
+                        <div className="d-flex align-items-center">
+                          {/* Can Read Checkbox */}
+                          <div className="form-check me-3" style={{ width: '80px', flexShrink: 0 }}>
+                            <input
+                              type="checkbox"
+                              className="form-check-input"
+                              id={`${language}-read`}
+                              checked={canRead} // Keep the state based on the current selectedLang
+                              onChange={(e) => handleLanguageChange(language, 'canRead', e.target.checked)}
+                            />
+                            <label className="form-check-label visually-hidden" htmlFor={`${language}-read`}>Can Read for {language}</label>
+                          </div>
+
+                          {/* Can Write Checkbox */}
+                          <div className="form-check" style={{ width: '80px', flexShrink: 0 }}>
+                            <input
+                              type="checkbox"
+                              className="form-check-input"
+                              id={`${language}-write`}
+                              checked={canWrite} // Keep the state based on the current selectedLang
+                              onChange={(e) => handleLanguageChange(language, 'canWrite', e.target.checked)}
+                            />
+                            <label className="form-check-label visually-hidden" htmlFor={`${language}-write`}>Can Write for {language}</label>
+                          </div>
+                        </div>
                       </div>
                     );
                   })}
                 </div>
+
+                {/* </div> */}
               </div>
 
             </form>

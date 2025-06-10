@@ -88,7 +88,6 @@ const EmployeeCreatePageComponent = () => {
     }));
   };
 
-
 const handleLanguageChange = (languageName, type, value) => {
   // Find the index of the language in the selectedLanguages array
   const languageIndex = selectedLanguages.findIndex(lang => lang.languageName === languageName);
@@ -97,37 +96,41 @@ const handleLanguageChange = (languageName, type, value) => {
     // Language is already selected
     const updatedLanguages = [...selectedLanguages];
 
-    if (type === 'mainCheckbox') {
-      // Main checkbox is being unchecked - remove the language
-      if (!value) {
-        updatedLanguages.splice(languageIndex, 1);
-      }
-      // If the main checkbox is being checked, we don't do anything here
-      // as the initial selection is handled when clicking the main checkbox
-    } else {
-      // Can Read or Can Write checkbox is clicked - update the specific property
-      updatedLanguages[languageIndex] = {
-        ...updatedLanguages[languageIndex],
-        [type]: value,
-      };
-    }
+    // Update the specific property (either canRead or canWrite)
+    updatedLanguages[languageIndex] = {
+      ...updatedLanguages[languageIndex],
+      [type]: value,
+    };
 
+    // Update selectedLanguages with the modified language
     setSelectedLanguages(updatedLanguages);
-    handleChange("language", updatedLanguages); // Update the form data
-  } else {
-    // Language is not yet selected - add it
-    if (type === 'mainCheckbox' && value) {
-      const updatedLanguages = [...selectedLanguages, {
-        languageName: languageName,
-        canRead: false, // Initialize canRead and canWrite to false
-        canWrite: false,
-      }];
-      setSelectedLanguages(updatedLanguages);
+
+    // Only call handleChange if both canRead and canWrite are true
+    if (updatedLanguages[languageIndex].canRead && updatedLanguages[languageIndex].canWrite) {
       handleChange("language", updatedLanguages); // Update the form data
+      // saveToDatabase(updatedLanguages[languageIndex]); // Save the language to the database
+    }
+  } else {
+    // Language is not yet selected - add it only if either canRead or canWrite is selected
+    if (type === 'canRead' || type === 'canWrite') {
+      const newLang = {
+        languageName: languageName,
+        canRead: type === 'canRead' ? value : false,
+        canWrite: type === 'canWrite' ? value : false,
+      };
+
+      // Add the new language to selectedLanguages
+      const updatedLanguages = [...selectedLanguages, newLang];
+      setSelectedLanguages(updatedLanguages);
+
+      // Only call handleChange if both canRead and canWrite are true for the new language
+      if (newLang.canRead && newLang.canWrite) {
+        handleChange("language", updatedLanguages); // Update the form data
+        saveToDatabase(newLang); // Save the new language to the database
+      }
     }
   }
 };
-
 
 
   const nextPage = () => {
@@ -193,8 +196,6 @@ const handleLanguageChange = (languageName, type, value) => {
 
   const validateAdditionalDetails = () => {
     const newErrors = {};
-    // const requiredFields = ['permanentAddress', 'currentAddress', 'refferal', 'file', 'aadhaarNumber', 'jobProfile'];
-    //'file'
     const requiredFields = ['permanentAddress', 'currentAddress', 'refferal', 'aadhar','passport', 'aadhaarNumber' ,'appliedLocation'];
 
     requiredFields.forEach(field => {
@@ -204,10 +205,6 @@ const handleLanguageChange = (languageName, type, value) => {
         newErrors.aadhaarNumber = 'invalid format';
       }
     });
-    // Check file size if the file is provided
-    // if (formData.file && formData.file.size > 3 * 1024 * 1024) { // 3MB in bytes
-    //   newErrors.file = 'Please upload a file size less than 3MB';
-    // }
 
     if (formData.aadhar && formData.aadhar.size > 3 * 1024 * 1024) {
       newErrors.aadhar = 'Please upload a file size less than 3MB';
@@ -259,13 +256,11 @@ const handleLanguageChange = (languageName, type, value) => {
       },
     })
       .then((response) => {
-        const employeeId = response.data.id; // Assuming the response contains the 'id' of the employee
-        setReferenceNo(employeeId); // Store the reference number
+        const employeeId = response.data.id; 
+        setReferenceNo(employeeId);
         toast.success(`Employee created successfully! Your reference number is ${employeeId}`);
-        // toast.success("Employee created successfully!");
         setFormData({
           fullName: "", email: "",
-          //  jobProfile: "", 
            qualification: "",stream:"", mobileNo: "",
           permanentAddress: "", currentAddress: "", gender: "", previousOrganisation: "",appliedLocation:"",
           dob: null, maritalStatus: "", refferal: "", year: new Date().getFullYear(), 
@@ -279,9 +274,10 @@ const handleLanguageChange = (languageName, type, value) => {
       })
       .catch((errors) => {
         if (errors.response) {
-          const errorMessage = errors.response.data; // Assuming your backend returns the message directly
-          toast.error(`${errorMessage}`);
-          // toast.error(`Failed to create employee: ${errorMessage}`);
+          const errorMessage = errors.response.data; 
+          // toast.error(`${errorMessage}`);
+          console.log("errors.response.data",errors.response.data)
+          toast.error(`Email already register: ${errorMessage}`);
 
         } else {
           toast.error("Failed to create employee. Please try again.");

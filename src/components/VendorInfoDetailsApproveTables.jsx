@@ -6,7 +6,7 @@ import {
     updateVendorVerification
 }
     from '../components/services/VendorInfoService'; // Adjust the import path as needed
-
+import DataTable from 'react-data-table-component';
 const VendorInfoDetailsApproveTables = () => {
     const [vendorList, setVendorList] = useState([]);
     const [selectedVendor, setSelectedVendor] = useState(null);
@@ -81,11 +81,97 @@ const VendorInfoDetailsApproveTables = () => {
         setSelectedVendor(null);
         setShowModal(false);
     };
-
+ const columns = [
+    {
+      name: 'ID',
+      selector: row => row.id,
+      sortable: true,
+    },
+    {
+      name: 'Company Name',
+      cell: row => (
+        <button
+          className="btn btn-link p-0"
+          onClick={() => handleCompanyClick(row)}
+        >
+          {row.companyName}
+        </button>
+      ),
+    },
+    {
+      name: 'Email',
+      selector: row => row.email,
+    },
+    {
+      name: 'City',
+      selector: row => row.city,
+    },
+    {
+      name: 'Verification Remark',
+      selector: row => row.verificationRemark,
+    },
+    {
+      name: 'Vendor Verification Details',
+      selector: row => row.vendorDetailsVerification,
+    },
+    {
+      name: 'Status',
+      cell: row => (
+        <select
+          className="form-select"
+          value={statusMap[row.id] || ""}
+          onChange={(e) =>
+            setStatusMap(prev => ({ ...prev, [row.id]: e.target.value }))
+          }
+          disabled={
+            row.vendorDetailsVerification === 'APPROVED' ||
+            row.vendorDetailsVerification === 'REJECT'
+          }
+        >
+          <option value="">Select Status</option>
+          {enumOptions.map((option) => (
+            <option key={option} value={option}>{option}</option>
+          ))}
+        </select>
+      ),
+    },
+    {
+      name: 'Remark',
+      cell: row => (
+        <input
+          type="text"
+          className="form-control"
+          placeholder="Enter remark"
+          value={remarkMap[row.id] || ""}
+          onChange={(e) =>
+            setRemarkMap(prev => ({ ...prev, [row.id]: e.target.value }))
+          }
+          disabled={
+            row.vendorDetailsVerification === 'APPROVED' ||
+            row.vendorDetailsVerification === 'REJECT'
+          }
+        />
+      ),
+    },
+    {
+      name: 'Action',
+      cell: row => (
+        <button
+          className="btn btn-primary btn-sm"
+          onClick={() => handleSubmit(row.id)}
+          disabled={
+            row.vendorDetailsVerification === 'APPROVED' ||
+            row.vendorDetailsVerification === 'REJECT'
+          }
+        >
+          Submit
+        </button>
+      ),
+    },
+  ];
     return (
         <div className="container mt-4">
-           
-            <table className="table table-bordered">
+            {/* <table className="table table-bordered">
                 <thead>
                     <tr>
                         <th>ID</th>
@@ -99,65 +185,80 @@ const VendorInfoDetailsApproveTables = () => {
                         <th>Action</th>
                     </tr>
                 </thead>
-                <tbody>           
-                    {vendorList.map((vendor) => (
-                        <tr key={vendor.id}>
-                            <td>{vendor.id}</td>
-                            <td>
-                                <button
-                                    className="btn btn-link p-0"
-                                    onClick={() => handleCompanyClick(vendor)}
-                                >
-                                    {vendor.companyName}
-                                </button>
-                            </td>
-                            <td>{vendor.email}</td>
-                            <td>{vendor.city}</td>
-                            <td>{vendor.verificationRemark}</td>
-                            <td>{vendor.vendorDetailsVerification}</td>
-                            <td>
-                                <select
-                                    className="form-select"
-                                    value={statusMap[vendor.id] || ""}
-                                    onChange={(e) =>
-                                        setStatusMap({ ...statusMap, [vendor.id]: e.target.value })
-                                    }
-                                >
-                                    <option value="">Select Status</option>
-                                    {enumOptions.map((option) => (
-                                        <option key={option} value={option}>
-                                            {option}
-                                        </option>
-                                    ))}
-                                </select>
-                            </td>
+                <tbody>
 
-                            <td>
-                                <input
-                                    type="text"
-                                    className="form-control"
-                                    placeholder="Enter remark"
-                                    value={remarkMap[vendor.id] || ""}
-                                    onChange={(e) =>
-                                        setRemarkMap({ ...remarkMap, [vendor.id]: e.target.value })
-                                    }
-                                />
-                            </td>
+                    {vendorList.map((vendor) => {
+                        const isClosed = vendor.vendorDetailsVerification === 'APPROVED' || vendor.vendorDetailsVerification === 'REJECT';
 
-                            <td>
-                                <button
-                                    className="btn btn-primary btn-sm"
-                                    onClick={() => handleSubmit(vendor.id)}
-                                >
-                                    Submit
-                                </button>
-                            </td>
-                        </tr>
-                    ))}
+                        return (
+                            <tr key={vendor.id}>
+                                <td>{vendor.id}</td>
+                                <td>
+                                    <button
+                                        className="btn btn-link p-0"
+                                        onClick={() => handleCompanyClick(vendor)}
+                                    >
+                                        {vendor.companyName}
+                                    </button>
+                                </td>
+                                <td>{vendor.email}</td>
+                                <td>{vendor.city}</td>
+                                <td>{vendor.verificationRemark}</td>
+                                <td>{vendor.vendorDetailsVerification}</td>
+                                <td>
+                                    <select
+                                        className="form-select"
+                                        value={statusMap[vendor.id] || ""}
+                                        onChange={(e) =>
+                                            setStatusMap({ ...statusMap, [vendor.id]: e.target.value })
+                                        }
+                                        disabled={isClosed}
+                                    >
+                                        <option value="">Select Status</option>
+                                        {enumOptions.map((option) => (
+                                            <option key={option} value={option}>
+                                                {option}
+                                            </option>
+                                        ))}
+                                    </select>
+                                </td>
+
+                                <td>
+                                    <input
+                                        type="text"
+                                        className="form-control"
+                                        placeholder="Enter remark"
+                                        value={remarkMap[vendor.id] || ""}
+                                        onChange={(e) =>
+                                            setRemarkMap({ ...remarkMap, [vendor.id]: e.target.value })
+                                        }
+                                        disabled={isClosed}
+                                    />
+                                </td>
+
+                                <td>
+                                    <button
+                                        className="btn btn-primary btn-sm"
+                                        onClick={() => handleSubmit(vendor.id)}
+                                        disabled={isClosed}
+                                    >
+                                        Submit
+                                    </button>
+                                </td>
+                            </tr>
+                        );
+                    })}
+
                 </tbody>
             </table>
-
-
+ */}
+ <DataTable
+        columns={columns}
+        data={vendorList}
+        pagination
+        highlightOnHover
+        striped
+      />
             <Modal show={showModal} onHide={handleCloseModal} size="lg">
                 <Modal.Header closeButton>
                     <Modal.Title>Vendor Details</Modal.Title>
@@ -246,21 +347,32 @@ const VendorInfoDetailsApproveTables = () => {
                                     <th>Branch Address</th>
                                     <td>{selectedVendor.bankDetails.branchAddress}</td>
                                 </tr>
-                                <tr>
-                                    <th>Cheque Image</th>
-                                    <td>
 
-                                        {selectedVendor.bankDetails.chequeImageUrl ? (
-                                            <img
-                                                src={selectedVendor.bankDetails.chequeImageUrl}
-                                                alt="Cheque"
-                                                style={{ maxWidth: '100%', height: 'auto' }}
-                                            />
-                                        ) : (
-                                            "No image available"
-                                        )}
-                                    </td>
-                                </tr>
+                                {selectedVendor && selectedVendor.bankDetails && (
+                                    <tr>
+                                        <th>Cheque Image</th>
+                                        <td>
+                                            {selectedVendor.bankDetails.chequeImagePath ? (
+
+
+                                                <img
+                                                    src={`http://localhost:8082${selectedVendor.bankDetails.chequeImagePath}`}
+                                                    alt="Cheque"
+                                                    width={400}   
+                                                    height={138} 
+                                                     style={{ objectFit: 'cover' }}
+                                                    onError={(e) => {
+                                                        e.target.onerror = null;
+                                                        e.target.src = '/images/placeholder.jpg'; 
+                                                    }}
+                                                />
+
+                                            ) : (
+                                                <span>No image available</span>
+                                            )}
+                                        </td>
+                                    </tr>
+                                )}
 
 
                                 <tr>

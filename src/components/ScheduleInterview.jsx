@@ -129,12 +129,7 @@ function ScheduleInterview() {
       })
     );
   };
-  // const handleJobProfileChange = (e, empId) => {
-  //   const value = e.target.value;
-  //   setEmployees(prev => prev.map(emp => (
-  //     emp.id === empId ? { ...emp, selectedJobProfile: value } : emp
-  //   )));
-  // };
+
 
   const handleDropdownChange = (e, empId) => {
     const selectedValue = e.target.value;
@@ -167,25 +162,20 @@ function ScheduleInterview() {
     const payload = {
       id: empId,
       newStatus: "INTERVIEW_SCHEDULED",
-      // responseSubmitbyName: localStorage.getItem('email'),
       responseSubmitbyName: user.email,
       remarks: remark,
       processName: employee.selectedProcess,
-      // jobProfile: employee.selectedJobProfile,
-      // dropdownValues:employee.selectedDropdownValue,
       grade: employee.selectedGrade,
       companyType: employee.selectedCompanyType,
-      department: employee.selectedDepartment,          // <-- added
+      department: employee.selectedDepartment,         
       jobProfile: employee.selectedDesignation
     };
     try {
       await submitScheduleInterview(empId, payload);
-      // alert('Interview scheduled successfully!');
       getAllEmployees();
       toast.success('Response submitted successfully');
     } catch (error) {
       console.error('Error submitting interview:', error.response.data);
-      // alert('Failed to schedule interview: ' + (error?.response?.data?.message || 'Unknown error'));
       const errorMessage = error?.response?.data || 'Failed to schedule interview. Please try again.';
 
       toast.error(errorMessage);
@@ -194,9 +184,6 @@ function ScheduleInterview() {
 
   const columns = [
     { name: 'Name', selector: row => row.fullName },
-    // { name: 'Email', selector: row => row.email },
-    // { name: 'Mobile No', selector: row => row.mobileNo },
-    // { name: 'Gender', selector: row => row.gender },
     { name: 'Register Date', selector: row => new Date(row.creationDate).toLocaleDateString() },
     {
       name: 'Remarks',
@@ -214,7 +201,7 @@ function ScheduleInterview() {
       selector: row => (
         <select
           className='form-select'
-          value={row.selectProcess || ''}
+          value={row.selectedProcess || ''}
           onChange={(e) => handleProcessChange(e, row.id)}
         >
           <option value="" disabled>Select</option>
@@ -226,21 +213,6 @@ function ScheduleInterview() {
         </select>
       )
     },
-    // {
-    //     name: 'Job Profile',
-    //     cell: row => (
-    //       <select
-    //         className="form-select"
-    //         value={row.selectedJobProfile || ''}
-    //         onChange={(e) => handleJobProfileChange(e, row.id)}
-    //       >
-    //         <option value="">Select Job Profile</option>
-    //         {jobTitles.map((title, i) => (
-    //           <option key={i} value={title}>{title}</option>
-    //         ))}
-    //       </select>
-    //     )
-    //   }, 
     {
       name: 'Grade',
       cell: row => (
