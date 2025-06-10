@@ -93,6 +93,9 @@ function RaiseQuery() {
             <tr>
               <th>No.</th>
               <th>Query</th>
+              <th>In Progress Remark</th>
+              <th>Closed Remark</th>
+              <th>Status</th>
             </tr>
           </thead>
           <tbody>
@@ -100,6 +103,9 @@ function RaiseQuery() {
               <tr key={query.id}>
                 <td>{index + 1}</td>
                 <td>{query.queryText}</td>
+                <td>{query.remark || '-'}</td>
+                <td>{query.closedRemarks || '-'}</td>
+                <td>{query.vendorQueryStatus || '-'}</td>
               </tr>
             ))}
           </tbody>

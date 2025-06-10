@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const REST_API_BASE_URL = 'http://localhost:8082/api/candi';
+const REST_API_BASE_URL = 'http://localhost:8082/api';
 
 const apiClient = axios.create({
     baseURL: REST_API_BASE_URL,
@@ -32,7 +32,7 @@ employeeApiClient.interceptors.request.use(config => {
 
 // Function to submit a query
 export const submitQuery = (vendorEmail, queryText) => {
-    return apiClient.post('/raisequery', {
+    return apiClient.post('/candidates/raisequery', {
         vendorEmail,
         queryText
     })
@@ -46,7 +46,7 @@ export const submitQuery = (vendorEmail, queryText) => {
 
 // Function to fetch candidates by vendor email
 export const getCandidatesByVendorEmail = (vendorEmail) => {
-    return apiClient.get('/getByVendorEmail', {
+    return apiClient.get('/candidates/getByVendorEmail', {
         params: { vendorEmail }
     })
     .then(response => {
@@ -58,7 +58,7 @@ export const getCandidatesByVendorEmail = (vendorEmail) => {
 }
 
 export const getCandidatesByDateRange = (startDate, endDate, email) => {
-    return apiClient.get('/byDateRange', {
+    return apiClient.get('/candi/byDateRange', {
         params: { startDate, endDate, email }
     })
     .then(response => {
@@ -70,7 +70,7 @@ export const getCandidatesByDateRange = (startDate, endDate, email) => {
 }
 
 export const getManagerStatusByEmail = (email) => {
-    return apiClient.get(`/manager-status`, {
+    return apiClient.get(`/candidates/manager-status`, {
         params: { email }
     })
     .then(response => {
@@ -82,14 +82,14 @@ export const getManagerStatusByEmail = (email) => {
 }
 
 export const getAllQueryForAdminPage = () => {
-    return employeeApiClient.get(`${REST_API_BASE_URL}/getAllQueryForAdmin`)
+    return employeeApiClient.get(`${REST_API_BASE_URL}/candidates/getAllQueryForAdmin`)
 }
 
 export const updateVendorQueryStatus = (id, payload,) => {
-  return employeeApiClient.put(`${REST_API_BASE_URL}/${id}/status`,payload);
+  return employeeApiClient.put(`${REST_API_BASE_URL}/candidates/${id}/status`,payload);
 };
 
 
 export const getAllStatuses = () => {
-  return employeeApiClient.get(`${REST_API_BASE_URL}/vendor-statuses`);
+  return employeeApiClient.get(`${REST_API_BASE_URL}/candidates/vendor-statuses`);
 };
