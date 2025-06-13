@@ -47,7 +47,7 @@ const RejectedEmployeesTable = () => {
   const fetchRejectedEmployees = async () => {
     try {
       setLoading(true);
-      const response = await getAllEmployeeRejectedByManager(user.city);
+      const response = await getAllEmployeeRejectedByManager(user.city,user.branch);
       const responseData = response.data !== undefined ? response.data : response;
       const employeesArray = Array.isArray(responseData)? responseData :responseData?.data || [];
      

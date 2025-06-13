@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { getListOfEmployeeScheduleInterview, submitScheduleInterview } from '../components/services/EmployeeService';
 import { getValuesInDropDown, getDegiAndDepart } from '../components/services/LoiService';
-
+import { getAllProcessNameCode } from './services/ProcessService';
 import UsersService from '../components/services/UserServices'; // make sure this path is correct
 import DataTable from 'react-data-table-component';
 import jobTitles from '../components/constants/jobProfiles'; // ✅ Job profiles import
@@ -37,14 +37,24 @@ function ScheduleInterview() {
     }
   }, [user?.city]);
 
-  const fetchProcessNames = async () => {
-    try {
-      const response = await UsersService.getAllProcessNameCode();
-      setProcessName(response); // assuming it's an array of strings
-    } catch (error) {
-      console.error('Error fetching process names:', error.message);
-    }
-  };
+  // const fetchProcessNames = async () => {
+  //   try {
+  //     const response = await UsersService.getAllProcessNameCode();
+  //     setProcessName(response); // assuming it's an array of strings
+  //   } catch (error) {
+  //     console.error('Error fetching process names:', error.message);
+  //   }
+  // };
+const fetchProcessNames = async () => {
+  try {
+    const response = await getAllProcessNameCode();
+    // Assuming response.data is your array of objects [{name: "xyz"}, ...]
+    const processNamesArray = response.data.map(item => item.name);
+    setProcessName(processNamesArray);
+  } catch (error) {
+    console.error('Error fetching process names:', error.message);
+  }
+};
 
   const fetchDropdownValues = async () => {
     try {
@@ -55,7 +65,7 @@ function ScheduleInterview() {
     }
   }
   const getAllEmployees = () => {
-    getListOfEmployeeScheduleInterview(user.city)
+    getListOfEmployeeScheduleInterview(user.city ,user.branch)
       .then((response) => {
         let filteredEmployees = response.data;
         if (filterDate) {

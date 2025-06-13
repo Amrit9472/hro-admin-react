@@ -1,23 +1,46 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import UsersService from "../components/services/UserServices";
-
+import { getAllProcessNameCodeRegisterPage } from "../components/services/ProcessService";
 
 UsersService.initialize();
 
 const RegisterForm = () => {
   const [formData, setFormData] = useState({
     email: "",
-    officeEmail:"",
+    officeEmail: "",
     name: "",
     password: "",
     city: "",
     role: "",
     process: "",
     processCode: "",
+    branch: "",
   });
 
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
+  const locationBranchMap = {
+    Mumbai: ["Mumbai-Highstreet", "Airoli-Reliable", "Airoli-Empire"],
+    Noida: ["Noida", "Noida-TrapezoidPark"],
+    Chennai: ["Chennai", "Chennai-TekTower"],
+    Bangalore: ["Bangalore", "Bangalore-Alcove"],
+    Pune: ["Pune"],
+    Telangana: ["Telangana"],
+  };
+
+  const [processList, setProcessList] = useState([]);
+  useEffect(() => {
+    const fetchProcessList = async () => {
+      try {
+        const response = await getAllProcessNameCodeRegisterPage();
+        setProcessList(response.data);
+      } catch (error) {
+        console.error("Error fetching process list:", error);
+      }
+    };
+
+    fetchProcessList();
+  }, []);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -37,7 +60,7 @@ const RegisterForm = () => {
       console.log("Response:", res);
       setFormData({
         email: "",
-        officeEmail:"",
+        officeEmail: "",
         name: "",
         password: "",
         city: "",
@@ -118,15 +141,45 @@ const RegisterForm = () => {
           </div>
           <div className="input-group mb-2">
             <span class="input-group-text" id="addon-wrapping">city</span>
-            <input
+            {/* <input
               type="text"
               name="city"
               placeholder="City"
               value={formData.city}
               onChange={handleChange}
               className="form-control"
-            />
+            /> */}
+            <select
+              className="form-select"
+              name="city"
+              value={formData.city}
+              onChange={handleChange}
+              required
+            >
+              <option value="">Select an Applied Location</option>
+              {Object.keys(locationBranchMap).map((city) => (
+                <option key={city} value={city}>{city}</option>
+              ))}
+            </select>
           </div>
+          <div className="input-group mb-2">
+            <span className="input-group-text" htmlFor="branch">Branch</span>
+            <select
+              className="form-select"
+              name="branch"
+              value={formData.branch}
+              onChange={handleChange}
+              disabled={!formData.city}
+              required
+            >
+              <option value="">Select a Branch</option>
+              {(locationBranchMap[formData.city] || []).map((branch) => (
+                <option key={branch} value={branch}>{branch}</option>
+              ))}
+            </select>
+          </div>
+
+
           <div className="input-group  mb-2">
             <label class="input-group-text" for="inputGroupSelect01">Options</label>
             <select
@@ -146,7 +199,7 @@ const RegisterForm = () => {
               <option value="ER">ER</option>
             </select>
           </div>
-          <div className="input-group mb-2">
+          {/* <div className="input-group mb-2">
             <span class="input-group-text" id="addon-wrapping">Process</span>
             <input
               type="text"
@@ -167,7 +220,47 @@ const RegisterForm = () => {
               onChange={handleChange}
               className="form-control"
             />
+          </div> */}
+          {/* Process Name Dropdown */}
+          <div className="input-group mb-2">
+            <label className="input-group-text" htmlFor="process">Process</label>
+            <select
+              className="form-select"
+              name="process"
+              value={formData.process}
+              onChange={handleChange}
+              required
+            >
+              <option value="">Select Process Name</option>
+              {processList.map((process) => (
+                <option key={process.name} value={process.name}>
+                  {process.name}
+                </option>
+              ))}
+            </select>
           </div>
+
+          {/* Process Code Dropdown */}
+          <div className="input-group mb-2">
+            <label className="input-group-text" htmlFor="processCode">Code</label>
+            <select
+              className="form-select"
+              name="processCode"
+              value={formData.processCode}
+              onChange={handleChange}
+              required
+            >
+              <option value="">Select Process Code</option>
+              {processList.map((process) => (
+                <option key={process.code} value={process.code}>
+                  {process.code}
+                </option>
+              ))}
+            </select>
+          </div>
+
+
+
           <div className="d-flex justify-content-center mt-4">
             <button type="submit" disabled={loading} className="btn btn-primary text-align-center" >
               {loading ? "Registering..." : "Register"}

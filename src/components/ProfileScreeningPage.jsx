@@ -27,7 +27,7 @@ function ProfileScreeningPage({role, name }) {
 
   const getAllEmployees = async () => {
     try {
-      const response = await getProfileScreaningList(user.city);
+      const response = await getProfileScreaningList(user.city ,user.branch);
       let data = response.data !== undefined ? response.data : response; // handle different response structures
 
       // Debug to verify response
@@ -107,7 +107,7 @@ function ProfileScreeningPage({role, name }) {
       const response = await putResponseOnProfileScreening(employeeId, statusRequestDTO);
       // You can check response.message or response.status if needed
       console.log('Response message:', response.message);
-      const updatedEmployees = await getProfileScreaningList(user.city);
+      const updatedEmployees = await getProfileScreaningList(user.city ,user.branch);
       const data = Array.isArray(updatedEmployees) ? updatedEmployees : (updatedEmployees?.data || []);
 
       setEmployees(Array.isArray(data) ? data : []);
@@ -116,8 +116,8 @@ function ProfileScreeningPage({role, name }) {
       setSelectedResponse(prev => ({ ...prev, [employeeId]: '' }));
       toast.success('Response submitted successfully');
     } catch (error) {
-      console.error('Error submitting response:', error);
-      toast.error(error.response?.data || 'Failed to submit response. Please try again');
+      console.error('Error submitting response:', error.response.data);
+      toast.error(error.response.data.message);
     }
   };
   const showEmployeeDetails = async (employeeId) => {

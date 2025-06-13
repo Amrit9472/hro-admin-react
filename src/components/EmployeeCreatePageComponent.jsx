@@ -13,7 +13,7 @@ const EmployeeCreatePageComponent = () => {
     fullName: "", email: "", 
      qualification: "", stream:"", mobileNo: "",
     permanentAddress: "", currentAddress: "", gender: "", previousOrganisation: "",
-    appliedLocation:"",
+    appliedLocation:"",appliedBranch:"",
     dob: null, maritalStatus: "", refferal: "", year: new Date().getFullYear(),
     file: null, 
       aadhar: null, 
@@ -66,6 +66,14 @@ const EmployeeCreatePageComponent = () => {
         dob: '', // Clear the error if age is valid
       }));
     }
+  }
+  if (field === 'appliedLocation') {
+    setFormData((prevFormData) => ({
+      ...prevFormData,
+      appliedLocation: value,
+      appliedBranch: '', // reset branch when location changes
+    }));
+    return;
   }
     setFormData((prevFormData) => ({
       ...prevFormData,
@@ -196,7 +204,7 @@ const handleLanguageChange = (languageName, type, value) => {
 
   const validateAdditionalDetails = () => {
     const newErrors = {};
-    const requiredFields = ['permanentAddress', 'currentAddress', 'refferal', 'aadhar','passport', 'aadhaarNumber' ,'appliedLocation'];
+    const requiredFields = ['permanentAddress', 'currentAddress', 'refferal', 'aadhar','passport', 'aadhaarNumber' ,'appliedLocation','appliedBranch'];
 
     requiredFields.forEach(field => {
       if (!formData[field]) {
@@ -262,7 +270,7 @@ const handleLanguageChange = (languageName, type, value) => {
         setFormData({
           fullName: "", email: "",
            qualification: "",stream:"", mobileNo: "",
-          permanentAddress: "", currentAddress: "", gender: "", previousOrganisation: "",appliedLocation:"",
+          permanentAddress: "", currentAddress: "", gender: "", previousOrganisation: "",appliedLocation:"",appliedBranch:"",
           dob: null, maritalStatus: "", refferal: "", year: new Date().getFullYear(), 
             aadhar: null, 
             passport: null ,    
@@ -274,10 +282,8 @@ const handleLanguageChange = (languageName, type, value) => {
       })
       .catch((errors) => {
         if (errors.response) {
-          const errorMessage = errors.response.data; 
-          // toast.error(`${errorMessage}`);
-          console.log("errors.response.data",errors.response.data)
-          toast.error(`Email already register: ${errorMessage}`);
+          const errorMessage = errors.response.data.message; 
+          toast.error(`${errorMessage}`);
 
         } else {
           toast.error("Failed to create employee. Please try again.");

@@ -56,7 +56,8 @@ const SelectedEmployeesTable = () => {
     try {
       setLoading(true);
       const location = user?.city;
-      const response = await getListOfSelectedEmployee(location);
+      const branch = user?.branch;
+      const response = await getListOfSelectedEmployee(location ,branch);
       const responseData = response.data !== undefined ? response.data : response;
       const employeesArray = Array.isArray(responseData) ? responseData : responseData?.data || [];
       if (!Array.isArray(employeesArray)) {

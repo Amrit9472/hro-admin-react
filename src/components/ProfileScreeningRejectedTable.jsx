@@ -11,7 +11,7 @@ const ProfileScreeningRejectedTable = () => {
 
   const fetchRejectedList = async () => {
     try {
-      const response = await getListOfEmployeeRejectedInProfileScreening(user.city);
+      const response = await getListOfEmployeeRejectedInProfileScreening(user.city , user.branch);
       setRejectedList(response.data);
       console.log(response.data)
     } catch (error) {

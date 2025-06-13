@@ -12,6 +12,14 @@ const AdditionalDetailsComponent = ({
   // handleFileChange
 }) => {
   const [vendorName, setVendorName] = useState("");
+  const locationBranchMap = {
+    Mumbai: ["Mumbai-Highstreet", "Airoli-Reliable", "Airoli-Empire"],
+    Noida: ["Noida", "Noida-TrapezoidPark"],
+    Chennai: ["Chennai", "Chennai-TekTower"],
+    Bangalore: ["Bangalore", "Bangalore-Alcove"],
+    Pune: ["Pune"],
+    Telangana: ["Telangana"],
+  };
 
   useEffect(() => {
     const fetchVendorName = async () => {
@@ -134,7 +142,7 @@ const AdditionalDetailsComponent = ({
                 />
               </div>
 
-              <div className="md-2">
+              {/* <div className="md-2">
                 <div className="d-flex justify-content-between align-items-center">
                   <label className="form-label"><strong>Applied location for</strong></label>
                   {errors.appliedLocation && (
@@ -152,11 +160,52 @@ const AdditionalDetailsComponent = ({
                   <option value="Mumbai">Mumbai</option>
                   <option value="Noida">Noida</option>
                   <option value="Bangaluru">Bangaluru</option>
-                  {/* Add more options as needed */}
+                  
+                </select>
+              </div> */}
+              <div className="md-2">
+                <div className="d-flex justify-content-between align-items-center">
+                  <label className="form-label"><strong>Applied Location</strong></label>
+                  {errors.appliedLocation && (
+                    <span className="text-danger small">
+                      {errors.appliedLocation}
+                    </span>
+                  )}
+                </div>
+                <select
+                  className={`form-control ${errors.appliedLocation ? "is-invalid" : ""}`}
+                  value={formData.appliedLocation}
+                  onChange={(e) => handleChange("appliedLocation", e.target.value)}
+                >
+                  <option value="" disabled>Select an Applied Location</option>
+                  <option value="Mumbai">Mumbai</option>
+                  <option value="Noida">Noida</option>
+                  <option value="Chennai">Chennai</option>
+                  <option value="Bangalore">Bangalore</option>
+                  <option value="Pune">Pune</option>
+                  <option value="Telangana">Telangana</option>
                 </select>
               </div>
 
-
+              <div className="md-2">
+                <div className="d-flex justify-content-between align-items-center">
+                  <label className="form-label"><strong>Applied Branch</strong></label>
+                  {errors.appliedBranch && (
+                    <span className="text-danger small">{errors.appliedBranch}</span>
+                  )}
+                </div>
+                <select
+                  className={`form-control ${errors.appliedBranch ? "is-invalid" : ""}`}
+                  value={formData.appliedBranch}
+                  onChange={(e) => handleChange("appliedBranch", e.target.value)}
+                  disabled={!formData.appliedLocation} // <— this disables until location selected
+                >
+                  <option value="" disabled>Select a Branch</option>
+                  {(locationBranchMap[formData.appliedLocation] || []).map((branch) => (
+                    <option key={branch} value={branch}>{branch}</option>
+                  ))}
+                </select>
+              </div>
 
               <div className="md-2">
                 <div className="d-flex justify-content-between align-items-center">
@@ -234,7 +283,7 @@ const AdditionalDetailsComponent = ({
                     </div>
                   )}
 
-                  {formData.source !== "Social Media" && formData.source  !== "Vendor" && (
+                  {formData.source !== "Social Media" && formData.source !== "Vendor" && (
                     <div className="md-2">
                       <div className="d-flex justify-content-between align-items-center">
                         <label className="form-label"><strong>Sub Source</strong></label>

@@ -48,6 +48,7 @@ const AuthProvider = ({ children }) => {
           role: res.role,
           email: res.email,
           uniqueCode: res.uniqueCode,
+          branch:res.branch
         };
         setVendorUser(userData);
         localStorage.setItem("vendorUser", JSON.stringify(userData));
@@ -79,6 +80,7 @@ const AuthProvider = ({ children }) => {
           role: res.role,
           email: res.email,
           uniqueCode: res.uniqueCode,
+          branch:res.branch
         };
         setEmployeeUser(userData);
         console.log("user details", userData)
